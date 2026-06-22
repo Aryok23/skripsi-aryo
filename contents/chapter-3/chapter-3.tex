@@ -1,54 +1,797 @@
 \chapter{Metode Penelitian}
 
-Bab ini menjelaskan metode atau cara yang digunakan dalam penelitian ini untuk 
-mencapai maksud dan tujuan seperti yang tertulis dalam sub-bab 1.3 [jika diinginkan, kalian dapat menuliskan Kembali tujuan penelitian yang ingin dicapai di sini].
+Bab ini menjelaskan tahapan yang ditempuh untuk menjawab tujuan penelitian, mulai dari 
+penyiapan data hingga implementasi sistem pemantauan.
 
-\section{Alat dan Bahan Tugas akhir (Opsional)}
+\section{Gambaran Umum Penelitian}
+\label{sec:gambaran_umum}
 
-\subsection{Alat Tugas akhir}
+Penelitian ini dilaksanakan melalui tujuh tahap berurutan yang membentuk satu
+alur dari penyediaan data hingga sistem yang berjalan, seperti ditunjukkan pada Gambar
+\ref{fig:alur_penelitian}. Tahap pertama adalah pengumpulan data citra dari aliran kamera pengawas
+kawasan Malioboro. Citra yang terkumpul kemudian dianotasi pada tahap kedua
+menggunakan pendekatan semi-otomatis untuk menghasilkan label sembilan kelas objek.
+Tahap ketiga membersihkan anotasi dari kesalahan geometris dan membagi data menjadi
+himpunan latih, validasi, dan uji. Tahap keempat melatih delapan varian model YOLOv8
+dan YOLO11 dengan konfigurasi identik untuk membandingkannya secara terkontrol. Tahap
+kelima mengevaluasi performa tiap varian menggunakan sejumlah metrik dan memilih
+model dengan keseimbangan akurasi serta kecepatan terbaik. Tahap keenam menyetel
+\textit{hyperparameter} model terpilih untuk mengoptimasi performanya. Tahap ketujuh
+menerapkan model hasil penyetelan ke dalam sistem pemantauan berbasis web yang
+memproses video secara waktu nyata dan menyajikan informasi kepadatan beserta
+notifikasinya.
 
-Alat-alat yang digunakan pada tugas akhir ini berupa perangkat keras maupun perangkat lunak sebagai sarana pendukung antara lain. Kemukakan secara detail sesuai dengan kebutuhan tugas akhir dan juga tambahkan spesifikasi minumum sehingga peneliti lain yang hendak melakukan hal yang sama bisa melakukannya :
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.0cm,
+        tahap/.style={rectangle, rounded corners, draw, text width=8.5cm, align=center, minimum height=0.9cm, fill=gray!8, font=\small},
+        panah/.style={-{Latex[length=2mm]}, thick}
+    ]
+        \node (t1) [tahap] {Pengumpulan data citra dari aliran CCTV kawasan Malioboro};
+        \node (t2) [tahap, below=of t1] {Anotasi semi-otomatis untuk sembilan kelas objek};
+        \node (t3) [tahap, below=of t2] {Pembersihan anotasi dan pembagian \textit{train}, \textit{validation}, \textit{test}};
+        \node (t4) [tahap, below=of t3] {Pelatihan dan perbandingan delapan varian YOLOv8 dan YOLO11};
+        \node (t5) [tahap, below=of t4] {Evaluasi metrik dan pemilihan model terbaik};
+        \node (t6) [tahap, below=of t5] {Penyetelan hyperparameter model terpilih};
+        \node (t7) [tahap, below=of t6] {Implementasi model pada sistem pemantauan berbasis web};
+        \draw[panah] (t1) -- (t2);
+        \draw[panah] (t2) -- (t3);
+        \draw[panah] (t3) -- (t4);
+        \draw[panah] (t4) -- (t5);
+        \draw[panah] (t5) -- (t6);
+        \draw[panah] (t6) -- (t7);
+    \end{tikzpicture}
+    \caption{Alur tahapan penelitian.}
+    \label{fig:alur_penelitian}
+\end{figure}
 
-\begin{enumerate}
-	\item \textit{Notebook} dengan spesifikasi minumum sistem operasi Windows 8, \textit{processor} Intel Core i3 2330M CPU @ 2,2 GHz, memori 4GB DDR3, grafis NVIDIA GeForce GT 610 (4GB), hardisk 500GB. Pada tugas akhir ini digunakan Windows 10, Intel Core i7 4570M CPU, Memori 4GB DDR 3, grafis Intel HD4300. 
-	\item \textit{Smartphone} dengan spesifikasi tipe minimum, OS Android OS v4.1.2 (Jelly Bean),CPU Dual-core 800 MHz, GPU Mali-400, Internal 4 GB, 768 MB RAM. Pada tugas akhir ini digunakan ....
-	\item \textit{Game creation platform} versi 3.3.2 untuk Stencyl dan Construct2.
-	\item CORELDRAW X7, Tiled dan GIMP 2
-\end{enumerate}
+Ketujuh tahap tersebut bersifat berurutan, yaitu keluaran satu tahap menjadi
+masukan bagi tahap berikutnya. Kualitas anotasi pada tahap kedua dan ketiga menetapkan
+batas atas performa yang dapat dicapai model pada tahap keempat, sedangkan performa
+model menentukan keandalan informasi kepadatan yang disajikan sistem pada tahap
+ketujuh. Karena keterkaitan tersebut, tahap penyiapan data dan pelatihan model diuraikan
+secara rinci pada subbab-subbab berikutnya sebelum perancangan sistem dibahas pada
+bagian akhir bab ini.
 
-\subsection{Bahan Tugas akhir}
+\section{Alat dan Bahan Tugas Akhir}
+\label{sec:alat_bahan}
 
-Bahan tugas akhir adalah segala sesuatu yang bersifat fisik atau digital yang digunakan untuk kebutuhan tugas akhir. Bahan tugas akhir dapat berupa:
+Subbab ini menjelaskan perangkat keras dan perangkat lunak yang digunakan sepanjang 
+penelitian. Spesifikasi dicantumkan agar tahap pelatihan dan pengujian dapat diulang 
+pada lingkungan yang setara.
 
-\begin{enumerate}
-	\item Bahan habis pakai. Bahan yang digunakan untuk tugas akhir. Sebagai contoh 
-	mungkin dibutuhkan kertas transparansi, baterai, atau yang lain 
-	\item Bahan yang berupa data atau informasi yang menjadi dataset tugas akhir. Dataset tugas akhir dapat berupa:
-	\begin{itemize}
-		\item Dataset pihak lain yang diperoleh dengan izin atau dalam lisensi yang diizinkan untuk digunakan secara langsung 
-		\item Dataset pihak pertama yang disusun sendiri melalui quisioner, observasi, atau interview 
-		\item Dokumen panduan yang mengacu pada standar, hasil tugas akhir, atau artikel yang disitasi dan digunakan.
-	\end{itemize}
-	
-\end{enumerate}
+\subsection{Perangkat Keras}
 
+Pelatihan model dilakukan pada lingkungan komputasi performa tinggi 
+(\textit{high-performance computing}, HPC) milik Departemen Teknik Elektro dan Teknologi 
+Informasi, Fakultas Teknik, Universitas Gadjah Mada. Lingkungan ini menyediakan GPU NVIDIA 
+Tesla V100-SXM2 dengan memori 32 GB, yang memungkinkan pelatihan seluruh varian model 
+termasuk ukuran \textit{large} tanpa kendala keterbatasan memori.
 
+Perancangan dan pengujian sistem dilakukan pada laptop dengan prosesor AMD Ryzen 5 5600H, 
+GPU NVIDIA GeForce GTX 1650 bermemori 4 GB, RAM 16 GB (2 $\times$ 8 GB DDR4-3200), dan 
+sistem operasi Windows 11 Home Single Language 64-bit. Spesifikasi ini mewakili kelas 
+perangkat dengan sumber daya terbatas sebagai target penerapan waktu nyata.
 
-\section{Metode yang Digunakan}
+\subsection{Perangkat Lunak}
 
-Bagian ini membahas metode atau cara yang akan digunakan dalam penelitian, tahapan 
-penerapan metode, dan desain penelitian (misalnya apakah penelitian akan menggunakan 
-eksperimen di Laboratorium atau di lapangan, misalkan saja penelitian biomedis atau 
-penelitian alat ukur hama yang dapat dilakukan di laboratorium ataupun di lapangan, atau menggunakan metode survei (misalnya untuk teknologi Informasi), studi kasus, atau analisis dengan perangkat lunak (ETAP, LTSpice, dst), atau \textit{prototyping} (pembuatan perangkat keras).
+Pelatihan dan inferensi model menggunakan pustaka Ultralytics yang menyediakan 
+implementasi YOLOv8 dan YOLO11 di atas kerangka kerja PyTorch. Proses anotasi data 
+dilakukan pada platform Roboflow, sedangkan pembacaan dan pemrosesan \textit{frame} 
+video dilakukan dengan pustaka OpenCV. Versi perangkat lunak utama yang digunakan pada 
+lingkungan pelatihan dirangkum pada Tabel \ref{tab:perangkat_lunak}.
 
-Bagian ini juga membahas bagaimana data [akan] dianalisis, apakah dengan membandingkan keluaran beberapa alat ukur, membandingkan dengan standar atau bagaimana.
+\begin{table}[h]
+    \centering
+    \caption{Versi perangkat lunak utama yang digunakan pada lingkungan pelatihan.}
+    \label{tab:perangkat_lunak}
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Perangkat lunak} & \textbf{Versi} \\
+        \hline \hline
+        Python & 3.10.12 \\
+        PyTorch & 2.2.0a0+81ea7a4 \\
+        CUDA & 12.3 \\
+        Ultralytics & 8.4.63 \\
+        OpenCV (cv2) & 4.9.0 \\
+        Roboflow & Platform anotasi berbasis web \\
+        Kerangka kerja sistem web & [lengkapi setelah ditentukan] \\
+        \hline
+    \end{tabular}
+\end{table}
 
-\section{Alur Tugas Akhir}
+\section{Pengumpulan Data}
+\label{sec:pengumpulan_data}
 
-Menguraikan prosedur yang akan digunakan dan jadwal atau alur penyelesaian setiap 
-tahap. Alur penelian ini dapat disajikan dalam bentuk diagram. Diagram dapat disusun dengan aturan yang baik semisal menggunakan \textit{flowchart}. Aturan dan tutorial pembuatan \textit{flowchart} dapat dilihat di \textcolor{blue}{http://ugm.id/flowcharttutorial}. Setelah menggambarkannya, penulis wajib menjelaskan langkah-langkah setiap alur tugas akhir dalam sub bab tersendiri sesuai dengan kebutuhan.
+Pengumpulan data bertujuan membangun kumpulan citra primer yang mewakili kondisi nyata 
+kawasan Malioboro sebagai bahan pelatihan dan pengujian model deteksi. Subbab ini 
+menjelaskan sumber dan mekanisme pengambilan citra, penjadwalan pengambilan untuk 
+memperoleh variasi kondisi, serta penyaringan citra yang tidak layak digunakan.
 
-\section{Etika, Masalah, dan Keterbatasan Penelitian (Opsional))}
+\subsection{Sumber dan Mekanisme Pengambilan \textit{Frame}}
 
-Bagian ini membahas pertimbangan etis penelitian dan [potensi] masalah serta
-keterbatasannya. Jika menyangkut penelitian dengan makhluk hidup, maka dibutuhkan adanya \textit{ethical clearance}, di bagian ini hal itu akan dibahas. Demikian juga tentang keterbatasan ataupun masalah yang akan timbul.
+Data primer penelitian berupa citra yang diambil dari aliran video langsung 22 kamera 
+pengawas publik di kawasan Malioboro yang dikelola Pemerintah Kota Yogyakarta. Aliran 
+video disediakan dalam format \textit{HTTP Live Streaming} (HLS) melalui berkas 
+\textit{playlist} berekstensi \texttt{.m3u8}, sehingga setiap kamera dapat diakses 
+sebagai sumber video daring.
+
+Pengambilan citra dilakukan secara otomatis menggunakan program yang ditulis dengan 
+bahasa Python. Program memiliki penjadwal internal sendiri, yaitu dijalankan satu kali 
+lalu menunggu hingga slot waktu berikutnya tanpa bergantung pada penjadwal sistem 
+eksternal. Pada setiap slot, program mengambil satu \textit{frame} dari tiap kamera.
+
+Pengambilan satu \textit{frame} dari aliran HLS memerlukan penanganan khusus karena 
+aliran menyimpan \textit{buffer} yang berisi \textit{frame} lama. Program membuka 
+aliran, menunggu dua detik agar koneksi stabil, membuang 30 \textit{frame} pertama 
+dari \textit{buffer}, lalu mengambil satu \textit{frame} terkini. Jika pengambilan 
+gagal, proses diulang hingga tiga kali sebelum kamera tersebut ditandai gagal. Setiap 
+\textit{frame} yang berhasil disimpan dalam format JPEG dengan kualitas 92, dan diberi 
+nama berkas yang memuat nomor kamera, tanggal, dan waktu pengambilan, sehingga tiap 
+citra dapat diidentifikasi sumber serta waktunya tanpa berkas catatan terpisah.
+
+\subsection{Penjadwalan dan Variasi Kondisi}
+
+Pengumpulan data berlangsung selama satu pekan, yaitu 30 April hingga 6 Mei 2026. Rentang 
+waktu ini dipilih agar data mencakup variasi kondisi antar hari, antar jam, dan antar 
+cuaca, sehingga model dilatih pada keragaman situasi yang mendekati kondisi nyata.
+
+Dalam satu hari, pengambilan dilakukan pada 11 slot waktu yang mewakili rentang kepadatan 
+dan pencahayaan, mulai dari dini hari yang sepi, meningkat sepanjang siang, hingga 
+memuncak pada sore dan malam hari sesuai karakter kawasan wisata Malioboro. Rincian slot 
+ditunjukkan pada Tabel \ref{tab:slot_pengumpulan}.
+
+\begin{table}[h]
+    \centering
+    \caption{Slot waktu pengambilan citra dalam satu hari.}
+    \label{tab:slot_pengumpulan}
+    \begin{tabular}{|c|l|l|}
+        \hline
+        \textbf{Pukul} & \textbf{Label Slot} & \textbf{Keterangan Kondisi} \\
+        \hline \hline
+        00.00 & \textit{midnight} & keramaian larut malam mulai menurun \\
+        02.00 & \textit{dawn} & kondisi paling sepi \\
+        06.00 & \textit{early\_morning} & aktivitas masih rendah \\
+        08.00 & \textit{morning} & aktivitas pagi meningkat \\
+        10.00 & \textit{midmorning} & kunjungan wisatawan meningkat \\
+        12.00 & \textit{noon} & keramaian siang \\
+        14.00 & \textit{afternoon} & keramaian siang berlanjut \\
+        16.00 & \textit{late\_afternoon} & keramaian menjelang sore \\
+        18.00 & \textit{evening} & awal puncak keramaian malam \\
+        20.00 & \textit{night} & puncak keramaian malam \\
+        22.00 & \textit{late\_night} & keramaian mulai menurun \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Dengan 11 slot, 22 kamera, dan 7 hari, jumlah \textit{frame} yang ditargetkan secara 
+teoretis adalah 1.694. Sebagian percobaan pengambilan gagal akibat gangguan koneksi 
+aliran, sehingga jumlah citra yang berhasil dikumpulkan adalah 1.581. Seluruh citra 
+tersebut digunakan tanpa penyaringan lebih lanjut, lalu dilanjutkan ke tahap anotasi.
+
+\section{Anotasi Data}
+\label{sec:anotasi_data}
+
+Anotasi bertujuan memberi label berupa kotak pembatas dan kelas pada setiap objek di 
+dalam citra. Subbab ini menjelaskan strategi anotasi yang dipilih akibat keterbatasan 
+waktu, perbandingan beberapa pendekatan pelabelan otomatis untuk menentukan 
+\textit{baseline}, serta anotasi manual dan koreksi yang melengkapinya. Seluruh proses 
+anotasi dikerjakan pada platform Roboflow.
+
+\subsection{Strategi Anotasi Semi-Otomatis}
+
+Rencana awal penelitian adalah menganotasi seluruh citra secara manual agar kualitas 
+label terjaga. Setelah 329 citra selesai dianotasi manual, waktu yang tersedia dinilai 
+tidak mencukupi untuk menyelesaikan seluruh 1.581 citra dengan cara yang sama dalam 
+jadwal penyusunan skripsi. Oleh karena itu, sisa 1.252 citra dianotasi menggunakan 
+pendekatan semi-otomatis, yaitu pelabelan otomatis oleh model \textit{pretrained} yang 
+kemudian diperiksa dan dikoreksi secara manual \cite{tenckhoff2025feedback}.
+
+Dengan pembagian tersebut, 329 citra hasil anotasi manual digunakan sebagai data dengan 
+label yang dianggap bersih, sedangkan 1.252 citra hasil anotasi semi-otomatis digunakan 
+sebagai data latih. Pembagian ke dalam himpunan latih, validasi, dan uji diuraikan pada 
+Subbab \ref{sec:pembersihan_pembagian}.
+
+\subsection{Perbandingan Pendekatan Pelabelan Otomatis}
+
+Tahap pelabelan otomatis memerlukan model dasar yang menghasilkan kotak pembatas awal. 
+Tiga kombinasi model diuji pada 1.252 citra latih untuk menentukan pilihan terbaik. 
+Pada ketiga kombinasi, kelas bajaj dideteksi oleh model YOLOv12s yang telah dilatih pada 
+dataset BMD-45 \cite{sharma2025bmd}, sedangkan kelas lain dideteksi oleh model dasar yang 
+berbeda, yaitu SAM3 \cite{carion2025sam3}, YOLO11x, atau YOLOv8x. Pelabelan dengan SAM3 
+dilakukan melalui layanan Roboflow API. Jumlah \textit{instance} hasil tiap kombinasi 
+dirangkum pada Tabel \ref{tab:perbandingan_autolabel}.
+
+\begin{table}[h]
+    \centering
+    \caption{Jumlah \textit{instance} hasil tiga kombinasi pelabelan otomatis pada 1.252 citra latih.}
+    \label{tab:perbandingan_autolabel}
+    \begin{tabular}{|l|r|r|r|}
+        \hline
+        % \textbf{Kelas} & \textbf{SAM3} & \textbf{YOLO11x} & \textbf{YOLOv8x} \\
+        \textbf{Kelas} & \multicolumn{1}{|c|}{\textbf{SAM3}} & \multicolumn{1}{c|}{\textbf{YOLO11x}} & \multicolumn{1}{c|}{\textbf{YOLOv8x}} \\
+        \hline \hline
+        andong & 0 & 0 & 0 \\
+        bajaj & 112 & 112 & 112 \\
+        becak & 0 & 0 & 0 \\
+        sepeda & 3.916 & 277 & 265 \\
+        bus & 549 & 114 & 123 \\
+        mobil & 11.964 & 1.789 & 1.821 \\
+        motor & 32.074 & 1.894 & 2.124 \\
+        orang & 81.000 & 7.784 & 9.803 \\
+        truk & 619 & 276 & 250 \\
+        \hline
+        \textbf{Total} & \textbf{130.234} & \textbf{12.246} & \textbf{14.498} \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Dua kelas, yaitu andong dan becak, tidak terdeteksi sama sekali oleh ketiga kombinasi 
+karena tidak tersedia pada model dasar mana pun, sementara bajaj menghasilkan jumlah 
+yang sama, yaitu 112, karena memakai model yang identik. Perbedaan utama terletak pada 
+kelas umum. Kombinasi berbasis SAM3 menghasilkan 130.234 \textit{instance}, hampir 
+sembilan kali lipat dibanding YOLOv8x, dengan kelas orang saja mencapai 81.000. SAM3 
+dirancang untuk menemukan seluruh \textit{instance} dari suatu konsep sekaligus, sehingga 
+pada citra yang padat cenderung menghasilkan deteksi yang sangat banyak dan didominasi 
+\textit{false positive}. Akibatnya, biaya koreksi manualnya justru lebih besar daripada 
+manfaatnya.
+
+Kombinasi YOLOv8x dipilih sebagai \textit{baseline}. Dibandingkan YOLO11x, YOLOv8x 
+bersifat lebih agresif, terlihat dari jumlah \textit{instance} yang lebih banyak, yaitu 
+14.498 berbanding 12.246. Sifat agresif ini menguntungkan pada tahap awal pelabelan karena 
+menghapus \textit{false positive} lebih cepat daripada menambahkan deteksi yang terlewat 
+secara manual. SAM3 tidak dipilih karena tingkat deteksi berlebihnya terlalu tinggi, 
+sehingga \textit{noise} yang dihasilkan tidak sebanding dengan waktu koreksi yang 
+diperlukan.
+
+\subsection{Anotasi Manual dan Koreksi}
+ 
+Hasil pelabelan otomatis melengkapi sebagian besar kelas, tetapi belum mencakup andong 
+dan becak yang tidak terdeteksi oleh model dasar mana pun. Kedua kelas tersebut dianotasi 
+secara manual penuh pada citra latih.
+ 
+Selain penambahan dua kelas tersebut, hasil \textit{baseline} YOLOv8x ditinjau dan 
+dikoreksi secara manual semaksimal mungkin. Gambar \ref{fig:contoh_misspredict} 
+menunjukkan salah satu contoh kesalahan, yaitu tiga bangku taman yang terdeteksi 
+sebagai objek (\textit{false positive}).
+ 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{contents/chapter-3/contoh_misspredict.png}
+    \caption{Contoh kesalahan deteksi tiga bangku taman yang terdeteksi sebagai objek.}
+    \label{fig:contoh_misspredict}
+\end{figure}
+ 
+Selain contoh pada gambar tersebut, penulis menemukan beberapa pola kesalahan yang 
+berulang. Kotak pembatas kelas bus dan truk sering tumpang tindih pada objek yang sama. 
+Kelas bajaj kadang terlabeli sebagai truk, sedangkan becak terkadang terdeteksi sebagai 
+motor. Latar belakang citra juga beberapa kali terdeteksi sebagai salah satu dari sembilan 
+kelas. Seluruh kesalahan tersebut diperbaiki secara manual, baik dengan menghapus deteksi 
+yang keliru, memperbaiki label kelas, maupun menyesuaikan kotak pembatas.
+ 
+Anotasi manual dan koreksi ini mengubah jumlah dan komposisi label dari hasil 
+\textit{baseline}. Distribusi akhir setelah pembersihan beserta pembagian data diuraikan 
+pada Subbab \ref{sec:pembersihan_pembagian}.
+
+\section{Pembersihan dan Pembagian Dataset}
+\label{sec:pembersihan_pembagian}
+
+Sebelum digunakan untuk pelatihan dan evaluasi, anotasi dibagi ke dalam tiga himpunan 
+lalu dibersihkan dari kesalahan geometris. Subbab ini menjelaskan pembagian data, proses 
+pembersihan anotasi, serta distribusi kelas akhir beserta ketidakseimbangannya.
+
+\subsection{Pembagian \textit{Train}, \textit{Validation}, dan \textit{Test}}
+
+Data dibagi ke dalam tiga himpunan, yaitu latih (\textit{train}), validasi 
+(\textit{validation}), dan uji (\textit{test}). Pembagian mengikuti cara anotasi yang 
+dijelaskan pada Subbab \ref{sec:anotasi_data}. Sebanyak 1.252 citra hasil anotasi 
+semi-otomatis digunakan sebagai himpunan latih, sedangkan 329 citra hasil anotasi manual 
+dibagi menjadi 165 citra validasi dan 164 citra uji.
+
+Penempatan seluruh citra ber-anotasi manual pada himpunan validasi dan uji dilakukan 
+dengan sengaja. Kedua himpunan tersebut menjadi acuan pengukuran performa model, sehingga 
+keduanya perlu memiliki label yang andal. Dengan label manual pada validasi dan uji, 
+performa model diukur terhadap acuan yang tepercaya, terlepas dari kemungkinan kesalahan 
+yang masih tersisa pada label semi-otomatis di himpunan latih.
+
+\subsection{Pembersihan Geometris Anotasi}
+
+Anotasi dibersihkan dari kotak pembatas yang tidak valid secara geometris menggunakan 
+lima filter. Kotak yang sangat kecil disaring karena objek dengan luas di bawah 0,1\% 
+luas citra setara dengan kurang dari 20$\times$20 piksel setelah citra diskala ke 
+640$\times$640, sehingga terlalu kecil untuk dipelajari dan sejalan dengan perhatian 
+terhadap objek berukuran sangat kecil pada COCO \cite{lin2014coco}. Kotak yang menutupi 
+lebih dari 90\% luas citra disaring sebagai kesalahan anotasi, sedangkan kotak dengan 
+rasio sisi yang ekstrem, baik terlalu tipis maupun terlalu lebar, juga disingkirkan. 
+Rincian ambang tiap filter ditunjukkan pada Tabel \ref{tab:filter_cleaning}.
+
+\begin{table}[h]
+    \centering
+    \caption{Filter pembersihan kotak pembatas.}
+    \label{tab:filter_cleaning}
+    \begin{tabular}{|p{5.8cm}|c|p{5cm}|}
+        \hline
+        % \centering \textbf{Kriteria} & \textbf{Ambang} & \textbf{Tindakan} \\
+        \textbf{Kriteria} & \textbf{Ambang} & \textbf{Tindakan} \\
+        \hline \hline
+        Luas ternormalisasi minimum & 0,001 & buang kotak $<$ 0,1\% luas citra \\
+        \hline
+        Luas ternormalisasi maksimum & 0,90 & buang kotak $>$ 90\% luas citra \\
+        \hline
+        Rasio sisi minimum & 0,15 & buang kotak terlalu tipis (lebar/tinggi $<$ 0,15) \\
+        \hline
+        Rasio sisi maksimum & 10,0 & buang kotak terlalu lebar (lebar/tinggi $>$ 10) \\
+        \hline  
+        Ukuran ternormalisasi maksimum & 1,0 & buang kotak yang melampaui batas citra \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Penerapan kelima filter mengurangi sebagian kecil anotasi pada tiap himpunan. Tabel 
+\ref{tab:efek_cleaning} merangkum jumlah \textit{instance} sebelum dan sesudah pembersihan. 
+Sebagian besar anotasi dipertahankan, dengan kelas orang paling banyak terdampak karena 
+banyaknya kotak berukuran kecil pada citra kerumunan yang padat.
+
+\begin{table}[h]
+    \centering
+    \caption{Jumlah \textit{instance} sebelum dan sesudah pembersihan pada tiap himpunan.}
+    \label{tab:efek_cleaning}
+    \begin{tabular}{|l|r|r|r|r|}
+        \hline
+        \textbf{Himpunan} & \textbf{Sebelum} & \textbf{Sesudah} & \textbf{Dibuang} & \textbf{Dipertahankan} \\
+        \hline \hline
+        Latih & 18.536 & 17.500 & 1.036 & 94,4\% \\
+        Validasi & 5.372 & 4.222 & 1.150 & 78,6\% \\
+        Uji & 5.605 & 4.288 & 1.317 & 76,5\% \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Distribusi dan Ketidakseimbangan Kelas}
+
+Distribusi kelas akhir setelah pembersihan ditunjukkan pada Tabel 
+\ref{tab:distribusi_kelas}. Distribusi ini sangat tidak seimbang. Pada himpunan latih, 
+kelas orang memiliki 10.694 \textit{instance}, sedangkan kelas truk hanya 45, sehingga 
+rasio antara kelas terbanyak dan paling sedikit mencapai sekitar 237 banding 1.
+
+\begin{table}[h]
+    \centering
+    \caption{Distribusi jumlah \textit{instance} tiap kelas setelah pembersihan.}
+    \label{tab:distribusi_kelas}
+    \begin{tabular}{|l|r|r|r|}
+        \hline
+        \textbf{Kelas} & \multicolumn{1}{|c|}{\textbf{Latih}} & \multicolumn{1}{|c|}{\textbf{Validasi}} & \multicolumn{1}{|c|}{\textbf{Uji}} \\
+        \hline \hline
+        andong & 611 & 76 & 95 \\
+        bajaj & 96 & 17 & 15 \\
+        becak & 2.277 & 464 & 445 \\
+        sepeda & 162 & 15 & 28 \\
+        bus & 92 & 13 & 10 \\
+        mobil & 1.695 & 430 & 336 \\
+        motor & 1.828 & 444 & 453 \\
+        orang & 10.694 & 2.759 & 2.898 \\
+        truk & 45 & 4 & 8 \\
+        \hline
+        \textbf{Total} & \textbf{17.500} & \textbf{4.222} & \textbf{4.288} \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Ketidakseimbangan ini mencerminkan komposisi objek yang sebenarnya di kawasan Malioboro, 
+yaitu pejalan kaki, becak, motor, dan mobil mendominasi, sedangkan truk, bus, bajaj, dan 
+sepeda jauh lebih jarang muncul. Ketidakseimbangan kelas merupakan persoalan yang umum 
+pada deteksi objek dan dapat menurunkan performa pada kelas minoritas 
+\cite{oksuz2021imbalance}. Pengaruh ketidakseimbangan ini terhadap performa deteksi tiap 
+kelas dianalisis pada Bab IV.
+
+\section{Pelatihan dan Perbandingan Model}
+\label{sec:pelatihan}
+
+Pelatihan bertujuan menghasilkan model deteksi terbaik dari dua keluarga arsitektur yang 
+dibandingkan, yaitu YOLOv8 dan YOLO11. Subbab ini menjelaskan konfigurasi pelatihan, 
+prapemrosesan dan augmentasi data masukan, serta skema pelatihan dan perbandingan model.
+
+\subsection{Konfigurasi Pelatihan}
+
+Pelatihan dilakukan pada lingkungan HPC dengan GPU NVIDIA Tesla V100-SXM2 32 GB yang 
+ijelaskan pada Subbab \ref{sec:alat_bahan}, menggunakan implementasi resmi Ultralytics. 
+Delapan varian model dilatih, yaitu YOLOv8 dan YOLO11 masing-masing pada empat ukuran, 
+yaitu \textit{nano} (n), \textit{small} (s), \textit{medium} (m), dan \textit{large} (l).
+
+Tiap varian diinisialisasi dari bobot \textit{pretrained} pada dataset COCO, lalu dilatih 
+ulang pada dataset kawasan Malioboro melalui mekanisme \textit{transfer learning}. Seluruh 
+varian dilatih dengan nilai \textit{hyperparameter} yang identik agar perbandingan 
+bersifat adil, sehingga perbedaan performa dapat diatribusikan pada arsitektur, bukan 
+pada konfigurasi pelatihan. Karena \textit{optimizer} diatur ke mode \textit{auto}, 
+Ultralytics menentukan jenis \textit{optimizer}, yaitu AdamW, beserta 
+\textit{learning rate} dan \textit{momentum} awalnya secara otomatis. Nilai 
+\textit{hyperparameter} selengkapnya dirangkum pada Tabel \ref{tab:konfigurasi_latih}.
+
+Penggunaan konfigurasi bawaan dan mode \textit{auto} dipilih atas dua pertimbangan. 
+Pertama, tujuan tahap ini adalah membandingkan dua keluarga arsitektur secara adil, 
+bukan mencari kombinasi \textit{hyperparameter} optimal untuk tiap varian. Menyetel 
+\textit{hyperparameter} secara berbeda untuk tiap model justru akan mencampuradukkan 
+efek arsitektur dengan efek konfigurasi, sehingga perbedaan performa tidak lagi dapat 
+diatribusikan pada arsitektur. Prinsip memakai pengaturan standar bawaan implementasi 
+resmi alih-alih menyetel manual tiap model juga diterapkan pada penelitian 
+\textit{benchmark} detektor pada dataset CCTV kendaraan, yang mengikuti konfigurasi yang 
+direkomendasikan untuk tiap model demi perbandingan yang adil \cite{sharma2025bmd}. 
+Penelitian ini menerapkan prinsip yang sama melalui mode \textit{auto} Ultralytics, yang 
+menetapkan \textit{optimizer}, \textit{learning rate}, dan \textit{momentum} secara 
+otomatis tanpa penyetelan manual. Kedua, performa deteksi cenderung tidak peka terhadap 
+perubahan \textit{hyperparameter} dalam rentang yang luas. Pada Faster R-CNN, perubahan 
+bobot fungsi \textit{loss} sebesar dua orde magnitudo hanya mengubah mAP sekitar 1\% 
+\cite{ren2015faster}, sehingga penyetelan manual tiap \textit{hyperparameter} tidak 
+diharapkan mengubah urutan perbandingan antar arsitektur secara berarti. Optimasi 
+terhadap satu \textit{hyperparameter} tertentu tetap dilakukan, tetapi hanya pada model 
+terbaik setelah model tersebut terpilih, sebagaimana diuraikan pada Subbab 
+\ref{sec:penyetelan}.
+
+\begin{table}[h]
+    \centering
+    \caption{Konfigurasi \textit{hyperparameter} pelatihan.}
+    \label{tab:konfigurasi_latih}
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Parameter} & \textbf{Nilai} \\
+        \hline
+        Jumlah epoch & 100 \\
+        \textit{Patience} (\textit{early stopping}) & 20 \\
+        \textit{Batch size} & otomatis (\textit{auto-batch}) \\
+        Ukuran citra masukan & 640 $\times$ 640 \\
+        \textit{Optimizer} & AdamW (dipilih otomatis, mode \textit{auto}) \\
+        \textit{Learning rate} awal & ditentukan otomatis oleh mode \textit{auto} \\
+        Faktor \textit{learning rate} akhir (lrf) & 0,01 \\
+        \textit{Momentum} & ditentukan otomatis oleh mode \textit{auto} \\
+        \textit{Weight decay} & 0,0005 \\
+        \textit{Warmup epoch} & 3 \\
+        Bobot awal & \textit{pretrained} COCO \\
+        \textit{Mixed precision} (AMP) & aktif \\
+        \textit{Seed} & 0 (deterministik) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Prapemrosesan dan Augmentasi}
+
+Sebelum masuk ke model, setiap citra diskala ke ukuran masukan 640 $\times$ 640 piksel. 
+Augmentasi data dilakukan menggunakan pengaturan bawaan Ultralytics, yang diterapkan 
+secara seragam pada seluruh varian agar perbandingan tidak dipengaruhi perbedaan 
+perlakuan augmentasi.
+
+Augmentasi yang aktif meliputi \textit{mosaic} dengan peluang penuh yang dimatikan pada 
+10 epoch terakhir, pembalikan horizontal dengan peluang 0,5, penskalaan acak sebesar 0,5, 
+pergeseran sebesar 0,1, penyesuaian warna pada ruang HSV, \textit{RandAugment}, serta 
+penghapusan acak (\textit{random erasing}) sebesar 0,4. Beberapa augmentasi tidak 
+diaktifkan, yaitu rotasi, pembalikan vertikal, \textit{mixup}, \textit{cutmix}, dan 
+\textit{copy-paste}, sesuai nilai bawaan Ultralytics.
+
+\subsection{Skema Pelatihan dan Perbandingan}
+
+Kedelapan varian dilatih dengan konfigurasi identik selama 100 epoch, dengan 
+\textit{early stopping} yang menghentikan pelatihan apabila performa pada data validasi 
+tidak membaik selama 20 epoch berturut-turut. Mekanisme ini memungkinkan pelatihan 
+berhenti sebelum mencapai 100 epoch jika model telah konvergen.
+
+Performa kedelapan varian kemudian dibandingkan menggunakan metrik yang dijelaskan pada 
+Subbab \ref{sec:evaluasi}. Model dengan keseimbangan akurasi dan kecepatan terbaik dipilih 
+untuk diterapkan pada sistem pemantauan. Hasil pelatihan dan perbandingan tiap varian 
+disajikan pada Bab IV.
+
+\section{Evaluasi Model}
+\label{sec:evaluasi}
+
+Evaluasi bertujuan mengukur dan membandingkan performa kedelapan varian model serta 
+memilih model terbaik untuk diterapkan. Subbab ini menjelaskan metrik yang digunakan 
+beserta desain evaluasi dan kriteria pemilihan model.
+
+\subsection{Metrik Evaluasi}
+
+Performa deteksi diukur menggunakan beberapa metrik yang definisinya telah diuraikan pada 
+Bab II, yaitu \textit{precision}, \textit{recall}, F1, serta 
+\textit{mean Average Precision} (mAP). Metrik mAP dihitung pada dua ambang 
+\textit{Intersection over Union} (IoU), yaitu mAP50 pada ambang 0,5 dan mAP50-95 sebagai 
+rata-rata pada ambang 0,5 hingga 0,95 dengan langkah 0,05. mAP50 menilai kemampuan deteksi 
+dengan toleransi lokalisasi yang longgar, sedangkan mAP50-95 menuntut lokalisasi yang 
+lebih tepat sehingga menjadi ukuran kualitas yang lebih ketat.
+
+Skor F1 dihitung sebagai rata-rata harmonik \textit{precision} dan \textit{recall}, baik 
+secara keseluruhan maupun per kelas. F1 per kelas digunakan untuk menganalisis pengaruh 
+ketidakseimbangan jumlah \textit{instance} terhadap performa tiap kelas, sesuai tujuan 
+penelitian. Seluruh metrik akurasi dihitung pada himpunan uji yang berlabel manual agar 
+pengukuran tidak bias.
+
+Selain akurasi, kecepatan inferensi diukur dalam jumlah \textit{frame} per detik (FPS) 
+atau waktu pemrosesan per citra pada perangkat penerapan, yaitu laptop dengan GPU GTX 1650. 
+Metrik ini menilai kelayakan model untuk pemantauan secara waktu nyata.
+
+\subsection{Desain Evaluasi dan Pemilihan Model}
+
+Evaluasi dilakukan dengan membandingkan kedelapan varian model pada metrik di atas 
+menggunakan himpunan uji. Himpunan validasi digunakan selama pelatihan untuk 
+\textit{early stopping}, sedangkan himpunan uji yang tidak pernah dilihat model selama 
+pelatihan menjadi dasar perbandingan akhir.
+
+Analisis tidak hanya melihat performa keseluruhan, tetapi juga performa tiap kelas melalui 
+F1 per kelas, untuk menilai sejauh mana ketidakseimbangan kelas memengaruhi deteksi pada 
+kelas mayoritas maupun minoritas.
+
+Model terbaik dipilih berdasarkan keseimbangan antara kualitas deteksi dan kecepatan 
+inferensi pada perangkat penerapan, bukan semata akurasi tertinggi, karena sistem harus 
+berjalan secara waktu nyata pada perangkat dengan sumber daya terbatas. Model terpilih 
+kemudian dioptimasi lebih lanjut melalui penyetelan \textit{hyperparameter} sebelum 
+diterapkan, sebagaimana diuraikan pada Subbab \ref{sec:penyetelan}. Hasil evaluasi dan 
+perbandingan kedelapan varian disajikan pada Bab IV.
+
+\section{Penyetelan Hyperparameter Model Terpilih}
+\label{sec:penyetelan}
+
+Pemilihan model pada Subbab \ref{sec:evaluasi} menghasilkan satu varian terbaik yang 
+menyeimbangkan kualitas deteksi dan kecepatan inferensi. Subbab ini menjelaskan upaya 
+meningkatkan performa varian terpilih melalui penyetelan \textit{hyperparameter}, beserta 
+dasar pemilihan \textit{hyperparameter} yang disetel, konfigurasi yang digunakan, dan 
+analisis hasilnya. Penyetelan ini diposisikan sebagai langkah optimasi terhadap satu model 
+terpilih, bukan pelatihan ulang seluruh varian, sehingga lingkupnya tetap terkendali.
+
+\subsection{Dasar dan Strategi Penyetelan}
+
+Penyetelan diarahkan pada satu \textit{hyperparameter} tunggal, yaitu ukuran citra masukan 
+(\textit{image size}), yang dinaikkan dari 640 menjadi 960 piksel. Pilihan ini didasarkan 
+pada karakteristik kelemahan model hasil pelatihan awal. Hasil evaluasi menunjukkan 
+\textit{recall} yang rendah pada hampir seluruh kelas dan performa terlemah pada kelas 
+sepeda, pola yang khas untuk objek berukuran kecil dan berjarak jauh dari kamera. Banyak 
+objek seperti orang dan motor di kejauhan tidak terdeteksi. Menaikkan resolusi masukan 
+menyasar kelemahan ini secara langsung, karena objek kecil terwakili oleh lebih banyak 
+piksel pada resolusi yang lebih tinggi sehingga lebih mudah dikenali.
+
+Dasar ini didukung oleh temuan empiris pada literatur deteksi objek. Hasil pada 
+\textit{benchmark} MIO-TCD menunjukkan bahwa menaikkan resolusi masukan dari 300 menjadi 
+512 piksel meningkatkan mAP sebesar 4\%, dan tantangan terbesar pada dataset tersebut 
+berasal dari kelas kendaraan kecil dan pejalan kaki yang mudah tertukar dengan kategori 
+sepeda dan motor karena ukurannya yang kecil \cite{luo2018miotcd}. Pola kesulitan yang 
+sama muncul pada dataset penelitian ini. Keterbatasan deteksi objek kecil juga diakui 
+sejak arsitektur YOLO awal, yang kesulitan pada objek kecil yang muncul berkelompok karena 
+penggunaan fitur yang relatif kasar akibat banyaknya lapisan \textit{downsampling} 
+\cite{redmon2016yolo}. Tinjauan terhadap masalah ketidakseimbangan pada deteksi objek 
+juga menegaskan adanya kecondongan distribusi ke arah objek berukuran kecil yang 
+memengaruhi performa deteksi \cite{oksuz2021imbalance}.
+
+Penyetelan dilakukan dengan menjaga satu variabel berubah. Seluruh \textit{hyperparameter} 
+lain dipertahankan identik dengan konfigurasi pelatihan awal pada Tabel 
+\ref{tab:konfigurasi_latih}, dan model diinisialisasi dari bobot \textit{pretrained} 
+COCO yang sama, bukan dari bobot hasil pelatihan pada dataset Malioboro. Dengan cara ini, 
+setiap perbedaan performa antara model pada resolusi 640 dan 960 dapat diatribusikan murni 
+pada perubahan resolusi, bukan pada faktor lain.
+
+\subsection{Hasil Penyetelan dan Analisis}
+
+Model hasil penyetelan berhenti pada epoch ke-79 akibat \textit{early stopping}, 
+sebanding dengan model awal yang berhenti pada kisaran epoch yang serupa, sehingga 
+keduanya sama-sama mencapai konvergensi sebelum batas 100 epoch. Perbandingan performa 
+keseluruhan pada himpunan uji disajikan pada Tabel \ref{tab:perbandingan_penyetelan}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Perbandingan performa yolo11l pada resolusi 640 dan 960 (himpunan uji)}
+    \label{tab:perbandingan_penyetelan}
+    \begin{tabular}{lccccc}
+        \hline
+        \textbf{Konfigurasi} & \textbf{mAP50} & \textbf{mAP50-95} & \textbf{Precision} & \textbf{Recall} & \textbf{Rerata F1} \\
+        \hline
+        Resolusi 640 (awal) & 0,6062 & 0,4012 & 0,7146 & 0,5438 & 0,5962 \\
+        Resolusi 960 (setelan) & 0,6497 & 0,4413 & 0,7575 & 0,6217 & 0,6739 \\
+        \hline
+        Selisih & +0,0435 & +0,0401 & +0,0429 & +0,0779 & +0,0777 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Seluruh metrik meningkat. Nilai mAP50-95 naik sebesar 0,0401 atau sekitar 4 poin 
+persentase, peningkatan yang besar untuk satu perubahan \textit{hyperparameter}. Kenaikan 
+terbesar terjadi pada \textit{recall}, yaitu 0,0779, yang sesuai dengan hipotesis bahwa 
+resolusi lebih tinggi membuat lebih banyak objek berhasil terdeteksi alih-alih terlewat. 
+Pola ini memperkuat dugaan bahwa kelemahan utama model awal adalah objek kecil yang tidak 
+tertangkap pada resolusi rendah.
+
+Perbaikan paling jelas terlihat pada analisis F1 per kelas, yang disajikan pada Tabel 
+\ref{tab:f1_penyetelan}. Kelas sepeda, yang menjadi kelas terlemah pada model awal, naik 
+sebesar 0,202 poin F1, sementara kelas bajaj naik sebesar 0,232 poin, peningkatan terbesar 
+di antara seluruh kelas. Kedua kelas ini berisi objek berukuran kecil hingga sedang dengan 
+jumlah \textit{instance} yang sedikit. Sebaliknya, kelas andong dan mobil yang berisi objek 
+relatif besar dan sudah terdeteksi baik pada resolusi 640 justru turun tipis, 
+masing-masing sebesar 0,014 dan 0,006 poin. Pola ini konsisten dengan dasar teoretis 
+penyetelan, yaitu kenaikan resolusi membantu objek kecil dan hampir tidak berpengaruh, 
+atau sedikit merugikan, pada objek yang sudah berukuran besar dan jelas.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Perbandingan F1 per kelas yolo11l pada resolusi 640 dan 960 (himpunan uji)}
+    \label{tab:f1_penyetelan}
+    \begin{tabular}{lccc}
+        \hline
+        \textbf{Kelas} & \textbf{F1 (640)} & \textbf{F1 (960)} & \textbf{Selisih} \\
+        \hline
+        andong & 0,799 & 0,785 & $-$0,014 \\
+        bajaj & 0,428 & 0,660 & +0,232 \\
+        becak & 0,769 & 0,814 & +0,045 \\
+        sepeda & 0,270 & 0,472 & +0,202 \\
+        bus & 0,503 & 0,620 & +0,117 \\
+        mobil & 0,820 & 0,814 & $-$0,006 \\
+        motor & 0,565 & 0,621 & +0,056 \\
+        orang & 0,643 & 0,654 & +0,011 \\
+        truk & 0,568 & 0,625 & +0,057 \\
+        \hline
+        Rerata & 0,596 & 0,674 & +0,078 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Peningkatan akurasi ini disertai biaya komputasi. Waktu pelatihan naik dari 34,9 menit 
+menjadi 84,2 menit, atau sekitar 141\%, akibat ukuran citra yang lebih besar. Ukuran 
+model praktis tidak berubah, yaitu 51,25 MB, karena arsitektur tetap sama dan hanya 
+resolusi masukan yang berbeda. Biaya pelatihan ini bersifat sekali jalan dan tidak menjadi 
+beban berulang saat sistem dioperasikan.
+
+Biaya yang lebih menentukan untuk kelayakan penerapan adalah kecepatan inferensi. Pada 
+GPU V100, model resolusi 960 mencapai 25,46 milidetik per citra atau setara 39,3 
+\textit{frame} per detik, yang masih jauh di atas ambang pemantauan waktu nyata. Akan 
+tetapi, perangkat penerapan yang dituju adalah laptop dengan GPU GTX 1650 yang jauh lebih 
+terbatas. Pengukuran pada perangkat tersebut menunjukkan model resolusi 960 hanya 
+mencapai 1,26 \textit{frame} per detik, dibandingkan 3,01 \textit{frame} per detik untuk 
+model resolusi 640. Resolusi yang dinaikkan memperlambat inferensi sekitar 58\% pada 
+perangkat target. Pembahasan menyeluruh mengenai kecepatan seluruh varian pada perangkat 
+penerapan dan implikasinya terhadap pengertian waktu nyata disajikan pada Bab IV.
+
+Berdasarkan keseluruhan hasil ini, penyetelan dinilai cukup pada tahap ini dan tidak 
+dilanjutkan dengan \textit{hyperparameter} lain. Penyetelan resolusi tunggal sudah 
+memberikan perbaikan yang konsisten pada seluruh metrik, dengan peningkatan terbesar 
+justru pada kelas yang paling lemah, sesuai dasar teoretis yang diajukan di awal. 
+Memperluas penyetelan ke varian lain atau ke \textit{hyperparameter} tambahan akan keluar 
+dari lingkup optimasi terhadap satu model terpilih dan berisiko menurunkan keterkendalian 
+atribusi hasil. Pilihan konfigurasi akhir yang diterapkan pada sistem, antara model 
+resolusi 640 yang lebih cepat dan model resolusi 960 yang lebih akurat, ditentukan 
+berdasarkan pertimbangan kecepatan pada perangkat target yang dibahas pada Bab IV.
+
+\section{Perancangan dan Implementasi Sistem}
+\label{sec:sistem}
+
+Model hasil pelatihan dan penyetelan diterapkan pada sebuah sistem pemantauan berbasis web 
+yang mengolah aliran CCTV kawasan Malioboro secara langsung. Subbab ini menjelaskan 
+arsitektur sistem, mekanisme penanganan aliran video dan penjadwalan inferensi, estimasi 
+kepadatan beserta ambang notifikasi, dan visualisasi kepadatan pada antarmuka.
+
+\subsection{Arsitektur Sistem}
+
+Sistem terdiri atas dua bagian utama, yaitu \textit{backend} dan \textit{frontend}. 
+Bagian \textit{backend} dibangun menggunakan kerangka kerja FastAPI dengan bahasa Python, 
+dan bertanggung jawab atas pengambilan aliran CCTV, penjalanan inferensi model, 
+penyimpanan riwayat deteksi, serta pengiriman hasil ke antarmuka. Bagian \textit{frontend} 
+dibangun menggunakan pustaka React dengan \textit{Vite} dan \textit{Tailwind}, dan 
+menampilkan video langsung beserta hasil deteksi, grafik kepadatan, dan panel notifikasi 
+kepada pengguna.
+
+Sumber data sistem adalah 22 kamera CCTV publik yang disediakan melalui laman resmi 
+pemerintah Kota Yogyakarta dalam format aliran HLS. Registri kamera, termasuk tautan 
+aliran dan konfigurasi ambang tiap kamera, disimpan dalam berkas konfigurasi. Riwayat 
+deteksi disimpan dalam basis data SQLite yang dibuat otomatis saat sistem dijalankan, 
+dan digunakan sebagai sumber data grafik kepadatan. Hasil deteksi terbaru dikirim ke 
+antarmuka melalui mekanisme \textit{WebSocket} agar tampilan dapat diperbarui tanpa 
+pemuatan ulang halaman.
+
+\subsection{Penanganan Aliran CCTV dan Penjadwalan Inferensi}
+
+Menjalankan inferensi secara terus-menerus pada 22 aliran sekaligus tidak memungkinkan 
+pada perangkat dengan satu GPU terbatas, sebagaimana ditunjukkan oleh hasil kecepatan 
+pada Bab IV. Oleh karena itu, sistem membedakan penanganan antara kamera yang sedang 
+dipilih pengguna dan kamera lainnya melalui dua mekanisme terpisah.
+
+Kamera yang sedang dipilih ditangani oleh pemroses kamera aktif yang menjalankan dua 
+utas, yaitu satu utas untuk membaca aliran video dan satu utas untuk menjalankan 
+inferensi pada interval tetap. Pemisahan ini bertujuan menjaga agar tampilan video tetap 
+mulus sementara inferensi berjalan pada laju yang lebih lambat. Hasil deteksi ditampilkan 
+dengan teknik \textit{Motion JPEG} (MJPEG), yang memungkinkan sistem mengatur interval 
+inferensi secara mandiri dan menampilkan kotak deteksi bersamaan dengan \textit{frame} 
+terbaru. Tanpa pemisahan ini, kotak deteksi akan tampak tertinggal dari \textit{frame} 
+yang sedang ditampilkan karena laju inferensi yang jauh lebih rendah daripada laju video.
+
+Kamera yang tidak sedang dipilih ditangani oleh kumpulan penjadwal latar belakang yang 
+menggilir kamera satu per satu secara berurutan dalam satu utas. Pada tiap giliran, 
+sistem membuka aliran satu kamera, mengambil satu \textit{frame}, menjalankan inferensi, 
+lalu menutup aliran tersebut dan melanjutkan ke kamera berikutnya. Interval antar giliran 
+dihitung agar tiap kamera mendapat giliran kira-kira sekali per 60 detik, dengan membagi 
+jendela waktu 60 detik dengan jumlah kamera nonaktif. Mekanisme ini menjaga agar seluruh 
+kamera tetap terpantau untuk keperluan deteksi anomali kepadatan, tanpa membebani GPU 
+dengan 22 inferensi serentak.
+
+Pengukuran pada kondisi jaringan kampus menunjukkan rata-rata waktu satu siklus pemrosesan 
+latar belakang per kamera sekitar 2,59 detik, sehingga satu putaran penuh untuk 21 kamera 
+nonaktif memakan waktu sekitar 54,3 detik, mendekati target rancangan 60 detik. Pengukuran 
+ini dilakukan pada jaringan dengan kecepatan unduh 123 Mbps dan \textit{ping} 4 milidetik 
+ke server, sehingga durasi nyata pada kondisi jaringan lain dapat berbeda.
+
+Pengujian pada kondisi nyata menemukan bahwa sebagian kamera publik dapat tidak aktif 
+sewaktu-waktu. Pada implementasi awal, pembaca aliran dirancang untuk mencoba menyambung 
+ulang tanpa batas, sehingga satu kamera yang tidak aktif membuat satu siklus pemrosesan 
+tertahan hingga 154 detik. Karena penjadwal latar belakang berjalan berurutan dalam satu 
+utas, penundaan ini menghentikan pemantauan seluruh kamera lain selama itu. Masalah ini 
+diatasi dengan menambahkan batas waktu pengambilan \textit{frame} sebesar 10 detik. Jika 
+pengambilan melewati batas tersebut, proses dihentikan secara kooperatif dan giliran 
+dilanjutkan ke kamera berikutnya, dengan status dicatat sebagai \textit{timeout}. Setelah 
+perbaikan, satu kamera yang tidak aktif hanya menambah sekitar 10 detik pada satu putaran, 
+turun dari 154 detik sebelumnya, sehingga dampak satu kamera mati terhadap durasi satu 
+putaran berkurang dari lebih dari 285\% menjadi sekitar 14\%.
+
+\subsection{Estimasi Kepadatan dan Ambang Notifikasi}
+
+Notifikasi kepadatan didasarkan pada konsep \textit{Level of Service} (LOS) pejalan kaki, 
+yang menyatakan tingkat kenyamanan suatu ruang pejalan kaki berdasarkan kepadatan orang 
+per satuan luas \cite{fruin1971designing}. Standar serupa juga diatur dalam pedoman 
+teknis penyediaan prasarana pejalan kaki di Indonesia \cite{pupr2014pedoman}. Penerapan 
+LOS menuntut konversi dari jumlah orang yang terdeteksi pada citra menjadi kepadatan pada 
+luas ruang nyata, yang dilakukan melalui transformasi homografi. Titik acuan dan jarak 
+nyata di lapangan diperkirakan menggunakan \textit{Google Earth}.
+
+Transformasi homografi mensyaratkan sudut pandang kamera yang tetap, karena pemetaan 
+antara bidang citra dan bidang nyata bergantung pada posisi kamera yang konsisten. Pada 
+kenyataannya, sebagian kamera CCTV di kawasan ini memiliki sudut pandang yang tidak tetap, 
+sebagian di antaranya dapat digerakkan, sebagaimana ditunjukkan pada Gambar 
+\ref{fig:kamera_ptz} yang memperlihatkan kamera yang sama pada sudut yang berbeda. Oleh 
+karena itu, kalibrasi LOS melalui homografi hanya diterapkan pada dua kamera yang sudut 
+pandangnya relatif tetap sebagai contoh penerapan, sedangkan ambang untuk kamera lain 
+ditentukan secara manual. Pembatasan ini sejalan dengan batasan penelitian yang diuraikan 
+pada Bab I.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{contents/chapter-3/buktidinamis.png}
+    \caption{Kamera CCTV yang sama pada dua sudut pandang berbeda}
+    \label{fig:kamera_ptz}
+\end{figure}
+
+Alasan yang sama mendasari keputusan untuk tidak menggunakan area pemantauan terbatas 
+(\textit{Region of Interest}). Poligon area yang digambar satu kali tidak lagi sahih 
+setelah kamera bergeser, sehingga penghitungan objek dilakukan pada seluruh \textit{frame}, 
+bukan pada area terbatas tertentu.
+
+Ambang notifikasi ditetapkan per kelas untuk tiap kamera, bukan sebagai satu ambang 
+tunggal yang berlaku sama untuk seluruh kamera. Hal ini diperlukan karena tiap titik 
+kamera mewakili ruang dengan kapasitas yang berbeda, sehingga jumlah objek yang menandakan 
+kepadatan berlebih pun berbeda antar lokasi. Untuk dua kamera yang terkalibrasi LOS, 
+ambang jumlah orang diturunkan dari kapasitas ruang hasil homografi. Untuk kamera lainnya, 
+ambang ditentukan secara manual. Nilai ambang ini disimpan dalam berkas konfigurasi tiap 
+kamera.
+
+Agar notifikasi tidak terkirim berulang kali selama kondisi padat masih berlangsung, 
+sistem menerapkan tenggang waktu antar notifikasi untuk kombinasi kamera dan jenis 
+notifikasi yang sama. Tenggang waktu ditetapkan selama 7 menit, yang dinilai cukup untuk 
+mencegah notifikasi yang berlebihan tanpa membuat sistem lambat menanggapi kondisi yang 
+dapat berubah cepat. Jika kepadatan melonjak jauh melampaui ambang, tenggang waktu ini 
+diabaikan agar kondisi yang lebih berbahaya tetap diberitahukan. Penetapan nilai tenggang 
+waktu ini adalah pertimbangan rekayasa, bukan mengikuti standar tertentu.
+
+\subsection{Visualisasi Kepadatan pada Dashboard}
+
+Antarmuka menyajikan grafik kepadatan yang merangkum riwayat deteksi tiap kamera. Metrik 
+utama yang ditampilkan adalah jumlah orang, bukan gabungan seluruh kelas objek, karena 
+penggabungan orang dan kendaraan menjadi satu angka akan kehilangan makna mengingat skala 
+kepadatan keduanya berbeda. Selain itu, dasar notifikasi penelitian ini adalah LOS 
+pejalan kaki yang khusus berlaku untuk orang. Jumlah objek kelas kendaraan tetap dapat 
+dilihat secara terpisah melalui pilihan kelas pada antarmuka, tidak digabung dengan 
+jumlah orang.
+
+Data ditampilkan dengan agregasi per jam. Penyajian tren per jam digunakan sebagai 
+representasi standar pada pemantauan kerumunan, sebagaimana ditunjukkan pada platform 
+pemantauan transit yang menampilkan variasi jumlah orang per jam sepanjang hari 
+\cite{apeksha2025transit}. Visualisasi semacam ini membantu operator memahami kondisi 
+kepadatan tanpa harus mengamati seluruh kamera secara manual, yang melelahkan dan rawan 
+kesalahan \cite{wong2024fusion}. Tiap jam diwakili oleh dua nilai, yaitu rata-rata 
+sebagai gambaran kondisi tipikal dan nilai puncak sebagai penanda lonjakan sesaat, 
+karena untuk tujuan keselamatan momen puncak kepadatan lebih penting daripada rata-rata 
+yang dapat menutupi lonjakan singkat.
+
+Pengguna dapat memilih dua rentang waktu. Rentang harian menampilkan tren per jam dalam 
+satu hari berjalan, sedangkan rentang mingguan menampilkan tren per hari selama tujuh 
+hari terakhir untuk memperlihatkan pola perbedaan antar hari. Grafik disajikan terpisah 
+untuk tiap kamera, karena tiap lokasi memiliki karakter kepadatan yang berbeda. Data 
+untuk kedua rentang ini diambil dari riwayat deteksi yang tersimpan dalam basis data.

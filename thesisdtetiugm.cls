@@ -86,9 +86,14 @@
 \usepackage{tikz}
 \usepackage{pgfplots}
 \usepackage{pgf-pie}
+\usepackage{microtype}
+\usepackage{ragged2e}
+\usepackage[none]{hyphenat}
+\emergencystretch=3em
 \usetikzlibrary{calc}
 \usetikzlibrary{positioning}
 \usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
 \usetikzlibrary{shapes}
 \bibliographystyle{IEEEtran}
 
