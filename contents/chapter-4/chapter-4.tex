@@ -498,9 +498,22 @@ video langsung, masing-masing diberi label kelas dan nilai keyakinan, sesuai ran
 Subbab \ref{sec:sistem}. Panel ringkasan di bagian bawah menunjukkan jumlah deteksi tiap 
 kelas pada \textit{frame} saat itu, yaitu sembilan orang dan dua mobil, yang sesuai dengan 
 jumlah kotak yang tergambar pada citra. Panel peringatan kamera di sisi kiri menampilkan 
-satu notifikasi aktif berstatus padat dengan keterangan "orang=9 melebihi ambang 5", 
-menunjukkan mekanisme ambang notifikasi yang dirancang pada Subbab \ref{sec:sistem} berhasil 
+satu notifikasi aktif berstatus padat dengan keterangan "orang=9 melebihi ambang 5", yang 
+menunjukkan mekanisme notifikasi yang dirancang pada Subbab \ref{sec:sistem} berhasil 
 terpicu sesuai kondisi kepadatan yang terdeteksi.
+
+Nilai ambang 5 pada notifikasi tersebut sengaja diturunkan dari ambang sesungguhnya untuk 
+keperluan pengujian, bukan nilai yang dipakai pada operasional sebenarnya. Ambang 
+sesungguhnya dihitung dari luas area pejalan kaki yang telah diukur pada Subbab 
+\ref{sec:sistem}, yaitu 169~m\textsuperscript{2} untuk kamera seberang Gedung Agung dan 
+149~m\textsuperscript{2} untuk kamera Titik Nol, dibagi luas minimum 1,4 
+m\textsuperscript{2} per orang pada Standar D. Pembagian ini menghasilkan ambang sekitar 
+120 orang untuk kamera seberang Gedung Agung dan 106 orang untuk kamera Titik Nol, dan 
+menunggu kepadatan sungguhan mencapai angka tersebut secara alami tidak praktis untuk 
+keperluan pengujian fungsional pada penelitian ini. Nilai 5 dipilih sebagai pengganti 
+sementara agar notifikasi dapat dipicu dan diverifikasi dalam waktu pengujian yang wajar, 
+sedangkan ambang berbasis Standar D yang sesungguhnya, yaitu 120 dan 106 orang, tetap 
+menjadi nilai yang diterapkan pada konfigurasi akhir sistem.
 
 \subsection{Hasil Grafik Kepadatan dan Riwayat Peringatan}
 \label{sec:hasil_grafik_riwayat}
