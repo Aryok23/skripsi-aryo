@@ -1,5 +1,127 @@
-\chapter{Tambahan (Opsional)}
+\chapter{Kesimpulan dan Saran}
 
-Anda boleh menambahkan Bab jika diperlukan. Jumlah Bab tidak harus sesuai dengan \textit{template}. 
+Bab ini menutup naskah dengan menyajikan kesimpulan penelitian dan saran untuk 
+pengembangan lanjutan. Subbab \ref{sec:kesimpulan} merangkum jawaban atas tiga rumusan 
+masalah yang telah ditetapkan pada Bab I, disusun berurutan mengikuti alur dari 
+ketersediaan data hingga penerapan sistem. Subbab \ref{sec:saran} menguraikan arah 
+pengembangan lanjutan yang diturunkan dari batasan penelitian dan keterbatasan yang 
+teridentifikasi sepanjang proses penelitian.
 
-Bab tambahan ini diperlukan jika hasil penelitian untuk menjawab tujuan cukup panjang atau terdiri dari banyak sub bab. Mahasiswa boleh menjawab 1 tujuan penelitian dengan 1 bab.
+\section{Kesimpulan}
+\label{sec:kesimpulan}
+
+Penelitian ini menjawab tiga rumusan masalah yang ditetapkan pada Bab I melalui 
+pembentukan dataset, perbandingan dan penyetelan model deteksi, serta implementasi sistem 
+pemantauan berbasis web. Ketiga jawaban tersebut diuraikan secara berurutan pada subbab 
+ini, mengikuti urutan rumusan masalah pada Bab I agar keterkaitan antara permasalahan dan 
+temuan dapat ditelusuri secara langsung. Subbab ini diakhiri dengan satu paragraf yang 
+merangkum keterkaitan antar ketiga jawaban tersebut sebagai satu rangkaian yang saling 
+menopang.
+
+Pertama, dataset deteksi objek untuk sembilan kelas khas kawasan Malioboro berhasil 
+dibangun melalui anotasi semi-otomatis berbantuan model \textit{pretrained} dengan koreksi 
+manual, menjawab rumusan masalah pertama yang menyatakan dataset semacam ini belum 
+tersedia pada sumber data publik seperti COCO. Dataset akhir memuat 1.581 citra dengan 
+sembilan kelas, yaitu andong, bajaj, becak, sepeda, bus, mobil, motor, orang, dan truk, 
+dengan distribusi yang sangat tidak seimbang antara kelas orang sebanyak 10.694 
+\textit{instance} dan kelas truk sebanyak 45 \textit{instance}, atau rasio sekitar 237 
+berbanding 1. Ketidakseimbangan ini bukan kekurangan proses pengumpulan data, melainkan 
+cerminan komposisi objek yang sebenarnya di lapangan, sehingga dataset yang terbentuk 
+dapat dikatakan merepresentasikan kondisi nyata kawasan Malioboro secara jujur.
+
+Kedua, perbandingan delapan varian model YOLOv8 dan YOLO11 berhasil menentukan model 
+dengan performa terbaik, sekaligus mengungkap pengaruh ketidakseimbangan kelas terhadap 
+performa deteksi tiap kelas, menjawab rumusan masalah kedua secara menyeluruh. Pada 
+himpunan uji, yolov8l mencatat mAP50 dan rerata F1 tertinggi (0,6175 dan 0,6222), 
+sedangkan yolo11l mencatat mAP50-95 tertinggi (0,4012) dengan ukuran model 42\% lebih 
+ringkas. Model yolo11l dipilih sebagai model terbaik berdasarkan keunggulan lokalisasi dan 
+efisiensi ukuran tersebut, dan pilihan ini diperkuat oleh penyetelan resolusi citra 
+masukan dari 640 menjadi 960 piksel, yang menaikkan rerata F1 model terpilih dari 0,5962 
+menjadi 0,6739, melampaui capaian seluruh varian pada resolusi dasar termasuk yolov8l. 
+Analisis per kelas menunjukkan ketidakseimbangan kelas berpengaruh pada performa, tetapi 
+pengaruhnya dimoderasi oleh ukuran dan kekhasan visual objek, sebagaimana terlihat dari 
+kelas truk yang berjumlah paling sedikit namun memperoleh F1 lebih tinggi daripada kelas 
+sepeda yang berjumlah lebih banyak.
+
+Ketiga, model terpilih berhasil diimplementasikan ke dalam sistem pemantauan kepadatan 
+berbasis web yang memproses \textit{stream} video kamera CCTV dan mengukur performa 
+inferensinya, menjawab rumusan masalah ketiga. Pengujian fungsional menunjukkan antarmuka 
+deteksi langsung, grafik kepadatan, dan riwayat peringatan berjalan sesuai rancangan, 
+dengan notifikasi yang terpicu tepat sesuai ambang kepadatan yang ditetapkan. Pengukuran 
+kecepatan inferensi pada perangkat penerapan, yaitu laptop dengan GPU GTX 1650, 
+menunjukkan model terpilih mencapai 9,73 \textit{frame} per detik pada resolusi 640, lebih 
+cepat dibanding yolov8l yang hanya mencapai 8,80 \textit{frame} per detik pada perangkat 
+yang sama, berkebalikan dengan urutan kecepatan keduanya pada GPU Tesla V100 di lingkungan 
+pelatihan. Temuan ini menegaskan bahwa pertimbangan ukuran model yang mendasari pemilihan 
+yolo11l pada rumusan masalah kedua terbukti relevan secara langsung bagi kecepatan pada 
+perangkat target, bukan sekadar pertimbangan keamanan memori semata.
+
+Secara keseluruhan, ketiga jawaban di atas membentuk satu rangkaian yang saling menopang. 
+Dataset yang terbentuk pada jawaban pertama menjadi fondasi bagi perbandingan dan 
+pemilihan model pada jawaban kedua, dan model yang terpilih serta dioptimasi pada jawaban 
+kedua terbukti layak diterapkan pada sistem yang menjawab rumusan masalah ketiga, baik 
+dari sisi akurasi maupun kecepatan inferensi pada perangkat target. Dengan terjawabnya 
+ketiga rumusan masalah tersebut, tujuan penelitian yang ditetapkan pada Bab I tercapai 
+secara menyeluruh, mulai dari ketersediaan dataset hingga sistem pemantauan yang berfungsi.
+
+\section{Saran}
+\label{sec:saran}
+
+Penelitian ini memiliki sejumlah batasan yang ditetapkan sejak awal agar lingkupnya tetap 
+terarah, sebagaimana diuraikan pada Bab I, dan beberapa keterbatasan tambahan yang 
+teridentifikasi sepanjang proses penelitian. Batasan dan keterbatasan tersebut bukan 
+kekurangan yang perlu disesalkan, melainkan penanda arah yang jelas bagi penelitian 
+berikutnya untuk melanjutkan dari titik yang tepat. Subbab ini menguraikan enam arah 
+pengembangan lanjutan yang diturunkan langsung dari batasan dan keterbatasan tersebut, 
+disusun agar penelitian berikutnya tidak mengulang capaian yang sudah diperoleh di sini.
+
+Perluasan kalibrasi tingkat pelayanan ke seluruh titik kamera. Penetapan ambang 
+notifikasi berbasis tingkat pelayanan pejalan kaki pada penelitian ini hanya diterapkan 
+pada dua titik kamera yang dikalibrasi melalui homografi sebagai contoh penerapan, 
+sedangkan titik kamera lainnya menggunakan ambang yang ditentukan secara manual. 
+Penelitian lanjutan dapat mengembangkan metode kalibrasi homografi yang lebih efisien atau 
+bahkan otomatis untuk diterapkan pada seluruh 22 titik kamera, sehingga seluruh kawasan 
+mendapat penetapan ambang yang berbasis standar kuantitatif, bukan hanya estimasi manual.
+
+Penanganan kepadatan kendaraan dan kemacetan. Penelitian ini berfokus pada kepadatan 
+pejalan kaki melalui konsep tingkat pelayanan, sedangkan penetapan ambang untuk kemacetan 
+kendaraan berada di luar lingkup penelitian. Mengingat Malioboro juga mengalami kemacetan 
+akibat lonjakan kendaraan sebagaimana diuraikan pada Bab I, dan sistem yang dibangun sudah 
+mendeteksi kelas kendaraan seperti mobil, motor, bus, dan truk, penelitian lanjutan dapat 
+mengembangkan standar kepadatan atau tingkat pelayanan jalan yang setara untuk kendaraan, 
+sehingga sistem dapat memberi notifikasi kemacetan selain notifikasi keramaian pejalan 
+kaki.
+
+Penambahan kemampuan pelacakan antar-\textit{frame}. Sistem yang dibangun melakukan 
+penghitungan objek per \textit{frame} tanpa pelacakan (\textit{tracking}) antar-\textit{frame}, 
+sehingga tidak dapat membedakan apakah objek yang terdeteksi pada \textit{frame} berurutan 
+adalah objek yang sama atau berbeda. Penambahan algoritma pelacakan seperti DeepSORT pada 
+penelitian lanjutan akan memungkinkan estimasi arus pergerakan, kecepatan rata-rata 
+pejalan kaki, dan deteksi pola pergerakan yang tidak dapat diperoleh dari penghitungan per 
+\textit{frame} saja.
+
+Peningkatan kecepatan inferensi pada perangkat dengan sumber daya terbatas. Pengukuran 
+pada Bab IV menunjukkan kecepatan inferensi model terpilih pada GPU GTX 1650 belum 
+mencapai laju \textit{real-time} yang ideal, terutama setelah penyetelan resolusi ke 960 
+piksel. Penelitian lanjutan dapat mengeksplorasi teknik kompresi model seperti 
+\textit{pruning} atau kuantisasi, maupun konversi ke \textit{runtime} inferensi yang lebih 
+efisien seperti TensorRT, untuk mempercepat inferensi pada perangkat kelas konsumen tanpa 
+mengorbankan akurasi secara signifikan.
+
+Penanganan ketidakseimbangan kelas pada tahap pelatihan. Penelitian ini menunjukkan 
+ketidakseimbangan kelas memengaruhi performa deteksi pada kelas minoritas seperti sepeda 
+dan bajaj, dan mengatasinya melalui penyetelan resolusi yang menyasar objek berukuran 
+kecil. Penelitian lanjutan dapat menambahkan strategi yang menyasar langsung 
+ketidakseimbangan kelas, misalnya pembobotan fungsi kerugian per kelas atau augmentasi 
+data yang lebih agresif khusus pada kelas minoritas, untuk menelaah apakah performa kelas 
+seperti bajaj dan bus dapat ditingkatkan lebih lanjut tanpa mengorbankan performa kelas 
+mayoritas.
+
+Pengujian keterlibatan pengguna dan kebergunaan sistem. Penelitian ini berfokus pada 
+perbandingan model deteksi dan implementasi fungsional sistem, sedangkan perancangan 
+berbasis \textit{User-Centered Design} dan pengujian \textit{usability} tidak termasuk 
+dalam lingkup penelitian. Penelitian lanjutan dapat melibatkan calon pengguna sesungguhnya, 
+seperti petugas pengelola kawasan Malioboro, untuk menilai kemudahan penggunaan antarmuka 
+dan menyesuaikan rancangan sistem berdasarkan masukan tersebut, sehingga sistem tidak 
+hanya terbukti berfungsi secara teknis tetapi juga nyaman digunakan dalam operasional 
+sehari-hari.

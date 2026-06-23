@@ -89,6 +89,7 @@
 \usepackage{microtype}
 \usepackage{ragged2e}
 \usepackage[none]{hyphenat}
+\usepackage{amsmath}
 \emergencystretch=3em
 \usetikzlibrary{calc}
 \usetikzlibrary{positioning}
@@ -268,8 +269,8 @@
 				\vfill
 				\iftoggle{lang}{\textit{\textbf{\MakeUppercase{The Sustainable Development Goals}}}}{\textbf{\MakeUppercase{The Sustainable Development Goals}}}\\
 				\iftoggle{lang}{\textit{\textbf{Industry, Innovation and Infrastructure}}}{\textbf{Industry, Innovation and Infrastructure}}\\
-				\iftoggle{lang}{\textit{\textbf{Affordable and Clean Energy}}}{\textbf{Affordable and Clean Energy}}\\
-				\iftoggle{lang}{\textit{\textbf{Climate Action}}}{\textbf{Climate Action}}
+				% \iftoggle{lang}{\textit{\textbf{Affordable and Clean Energy}}}{\textbf{Affordable and Clean Energy}}\\
+				% \iftoggle{lang}{\textit{\textbf{Climate Action}}}{\textbf{Climate Action}}
 				\vfill
 				\iftoggle{lang}{\textbf{Disusun oleh:}}{Written by:}\\
 				\vspace{0.4em}

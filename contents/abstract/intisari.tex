@@ -1,46 +1,35 @@
-Intisari ditulis menggunakan bahasa Indonesia dengan jarak antar baris 1 spasi dan maksimal 1 halaman. Intisari sekurang-kurangnya berisi tentang latar belakang dan tujuan penelitian, metodologi yang digunakan, hasil penelitian, kesimpulan dan implikasi, dan Kata kunci yang berhubungan dengan penelitian.
+Penelitian ini bertujuan untuk membangun dataset deteksi objek sembilan 
+kelas khas kawasan Malioboro, membandingkan dan mengoptimasi varian model 
+YOLO untuk mendeteksi kelas-kelas tersebut, lalu mengimplementasikan model 
+terpilih ke dalam sistem pemantauan kepadatan pengunjung berbasis web, 
+sebagai jawaban atas keterbatasan pemantauan manual dan ketidaktersediaan 
+dataset publik seperti COCO untuk objek lokal seperti andong, becak, dan 
+bajaj. Metodologi yang digunakan meliputi pembangunan dataset dari rekaman 
+22 kamera CCTV publik kawasan Malioboro melalui anotasi semi-otomatis 
+berbantuan model \textit{pretrained} dengan koreksi manual, pelatihan dan 
+perbandingan delapan varian model YOLOv8 dan YOLO11 menggunakan metrik 
+mAP50, mAP50-95, dan F1-\textit{score} pada himpunan uji, penyetelan 
+resolusi citra masukan pada model terbaik, serta implementasi model 
+tersebut ke dalam sistem berbasis web yang memproses \textit{stream} video 
+kamera CCTV secara \textit{real-time} dengan ambang notifikasi kepadatan 
+berdasarkan konsep tingkat pelayanan (\textit{level of service}) pejalan 
+kaki. Hasil penelitian menunjukkan dataset akhir memuat 1.581 citra 
+beranotasi dengan distribusi kelas yang sangat tidak seimbang, mencapai 
+rasio 237 berbanding 1 antara kelas terbanyak dan tersedikit. Pada himpunan 
+uji, yolov8l mencatat mAP50 dan rerata F1 tertinggi (0,6175 dan 0,6222), 
+sedangkan yolo11l mencatat mAP50-95 tertinggi (0,4012) dengan ukuran model 
+42\% lebih ringkas sehingga dipilih sebagai model terbaik. Penyetelan 
+resolusi dari 640 menjadi 960 piksel kemudian menaikkan rerata F1 model 
+terpilih dari 0,5962 menjadi 0,6739, melampaui seluruh varian pada resolusi 
+dasar. Pengujian pada perangkat penerapan menunjukkan model terpilih 
+mencapai 9,73 \textit{frame} per detik pada GPU GTX 1650, lebih cepat 
+dibanding yolov8l yang hanya 8,80 \textit{frame} per detik, dengan sistem 
+yang berhasil menampilkan deteksi langsung, grafik kepadatan, dan riwayat 
+peringatan sesuai rancangan. Kesimpulan dari penelitian ini adalah model 
+YOLO11 \textit{large} dengan resolusi masukan yang disetel terbukti menjadi 
+pilihan yang seimbang antara akurasi, ukuran, dan kecepatan untuk 
+diterapkan pada sistem pemantauan kepadatan berbasis web di kawasan 
+Malioboro, dengan ketidakseimbangan kelas pada dataset lokal tetap menjadi 
+faktor yang memengaruhi performa deteksi pada kelas minoritas.
 
-Kata Kunci ditulis maksimal 5 kata yang paling berhubungan dengan isi skripsi. Silakan mengacu pada ACM / IEEE \textit{Computing classification} jika Anda adalah mahasiswa Sarjana TI \textcolor{blue}{http://www.acm.org/about/class/} atau mengacu kepada IEEE keywords \textcolor{blue}{http://www.ieee.org/documents/taxonomy\_v101.pdf} jika Anda berasal dari Prodi Sarjana TE.
-
-\noindent{Kata kunci} : Kata kunci 1, Kata kunci 2, Kata kunci 3, Kata kunci 4, Kata kunci 5
-
-\vspace{1cm}
-
-%HAPUS YANG TIDAK PERLU
-%-------------------------------------------------
-\noindent\fbox{%
-	\parbox{\textwidth}{%
-\textbf{Contoh Abstrak Teknik Elektro:} \\
-
-\hspace{1cm} "Penelitian ini bertujuan untuk mengembangkan sistem pengendalian suhu ruangan dengan menggunakan microcontroller. Metodologi yang digunakan adalah desain sirkuit, implementasi sistem pengendalian, dan pengujian performa. Hasil penelitian menunjukkan 
-bahwa sistem pengendalian suhu ruangan yang dikembangkan mampu mengendalikan suhu ruangan dengan akurasi sebesar ±0,5°C. Kesimpulan dari penelitian ini adalah sistem pengendalian suhu ruangan yang dikembangkan efektif dan efisien. \\
-
-Kata kunci: microcontroller, sistem pengendalian suhu, akurasi."
-\vspace{5mm}
-
-\textbf{Contoh Abstrak Teknik Biomedis:} \\
-
-\hspace{1cm} "Penelitian ini bertujuan untuk mengevaluasi keefektifan prototipe alat pemantau denyut jantung berbasis elektrokardiogram (ECG) untuk pasien jantung. Metodologi yang digunakan meliputi desain dan pembuatan prototipe, pengujian dengan pasien, dan analisis data. Hasil penelitian menunjukkan bahwa prototipe alat pemantau denyut jantung berbasis ECG memiliki 
-akurasi yang baik dan mampu memantau denyut jantung pasien secara efektif. Kesimpulan dari penelitian ini adalah prototipe alat pemantau denyut jantung berbasis ECG merupakan solusi 
-yang efektif dan efisien untuk memantau pasien jantung. \\
-
-Kata kunci: elektrokardiogram, alat pemantau denyut jantung, akurasi."
-\vspace{5mm}
-
-	}%
-}
-
-%-------------------------------------------------
-
-\noindent\fbox{%
-	\parbox{\textwidth}{%
-		\textbf{Contoh Abstrak Teknologi Informasi:} \\
-		
-\hspace{1cm} "Penelitian ini bertujuan untuk mengevaluasi keamanan dan privasi pengguna aplikasi media sosial terpopuler. Metodologi yang digunakan meliputi analisis kebijakan privasi dan pengaturan keamanan, pengujian penetrasi, dan survei pengguna. Hasil penelitian 
-menunjukkan bahwa beberapa aplikasi media sosial memiliki kebijakan privasi yang kurang jelas dan rendahnya tingkat keamanan. Kesimpulan dari penelitian ini adalah pentingnya meningkatkan kebijakan privasi dan tingkat keamanan pada aplikasi media sosial untuk melindungi privasi dan data pengguna. \\
-		
-Kata kunci: media sosial, keamanan, privasi, pengguna."
-\vspace{5mm}
-		
-	}%
-}
+\noindent\textbf{Kata kunci} : deteksi objek, YOLO, kepadatan pengunjung, ketidakseimbangan kelas, Malioboro

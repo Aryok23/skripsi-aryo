@@ -4,8 +4,8 @@
 
 Pemantauan kerumunan berbasis deteksi objek menggunakan model YOLO telah menjadi topik 
 penelitian yang aktif dalam beberapa tahun terakhir. Sebagian penelitian berfokus pada 
-penghitungan jumlah orang secara waktu nyata dari rekaman kamera. Gündüz dan Işık 
-\cite{gunduz2023new} mengusulkan metode deteksi kerumunan waktu nyata yang menentukan 
+penghitungan jumlah orang secara \textit{real-time} dari rekaman kamera. Gündüz dan Işık 
+\cite{gunduz2023new} mengusulkan metode deteksi kerumunan \textit{real-time} yang menentukan 
 batas suatu wilayah pada video, menghitung jumlah orang di dalamnya, dan membandingkan 
 performa beberapa varian model YOLO untuk keperluan tersebut. Pendekatan dengan tujuan 
 serupa diterapkan Ginting dkk. \cite{ginting2021crowd} yang menggabungkan YOLOv3-Tiny dan 
@@ -13,22 +13,22 @@ algoritma Viola-Jones untuk mendeteksi kerumunan di pusat perbelanjaan serta mem
 peringatan ketika jumlah orang melampaui ambang tertentu. Pada penerapan di perangkat 
 dengan sumber daya terbatas, Hansika dkk. \cite{hansika2024privacy} membangun kerangka 
 penghitungan kerumunan ringan menggunakan YOLOv8n dan algoritma pelacakan Norfair yang 
-dijalankan pada perangkat tepi Raspberry Pi 5, dengan hasil ditampilkan melalui 
+dijalankan pada \textit{edge device} Raspberry Pi 5, dengan hasil ditampilkan melalui 
 \textit{dashboard}.
 
 Sebagian penelitian lain menekankan keterpaduan deteksi dengan antarmuka pemantauan dan 
 sistem peringatan. Apeksha dkk. \cite{apeksha2025transit} mengembangkan platform 
-AI-Transit Alerts yang menghitung jumlah penumpang transportasi umum secara waktu nyata 
+AI-Transit Alerts yang menghitung jumlah penumpang transportasi umum secara \textit{real-time} 
 menggunakan YOLOv8, menampilkannya pada \textit{dashboard} interaktif, dan mengirim 
 peringatan otomatis ketika jumlah penumpang melampaui batas aman. Wong dan Law 
 \cite{wong2024fusion} menyoroti keterbatasan pemantauan CCTV manual yang melelahkan dan 
 rawan kesalahan pada ruang publik padat, lalu mengusulkan kerangka yang menggabungkan 
 rekaman CCTV dengan informasi denah ruang untuk memetakan lintasan individu dan memantau 
-kepadatan secara waktu nyata.
+kepadatan secara \textit{real-time}.
 
 Di luar deteksi orang, model YOLO juga digunakan untuk deteksi kendaraan dalam pemantauan 
 lalu lintas. Zhang dkk. \cite{zhang2022realtime} mengembangkan model YOLOv5 yang 
-ditingkatkan untuk deteksi kendaraan waktu nyata dengan fokus menurunkan tingkat deteksi 
+ditingkatkan untuk deteksi kendaraan \textit{real-time} dengan fokus menurunkan tingkat deteksi 
 keliru (\textit{false detection}). Ringkasan perbandingan penelitian terdahulu disajikan 
 pada Tabel \ref{tab:tinjauan}.
 
@@ -43,7 +43,7 @@ pada Tabel \ref{tab:tinjauan}.
         \hline
         Ginting dkk. \cite{ginting2021crowd} & YOLOv3-Tiny, Viola-Jones & Deteksi kerumunan di pusat perbelanjaan & Memicu peringatan saat ambang terlampaui \\
         \hline
-        Hansika dkk. \cite{hansika2024privacy} & YOLOv8n, Norfair & Penghitungan kerumunan pada perangkat tepi & Ringan, hemat sumber daya, dengan \textit{dashboard} \\
+        Hansika dkk. \cite{hansika2024privacy} & YOLOv8n, Norfair & Penghitungan kerumunan pada \textit{edge device} & Ringan, hemat sumber daya, dengan \textit{dashboard} \\
         \hline
         Apeksha dkk. \cite{apeksha2025transit} & YOLOv8 & Penghitungan penumpang transportasi umum & \textit{Dashboard} interaktif dan peringatan otomatis \\
         \hline
@@ -58,7 +58,7 @@ pada Tabel \ref{tab:tinjauan}.
 \end{table}
 
 Penelitian-penelitian tersebut menunjukkan model YOLO efektif untuk pemantauan kerumunan 
-maupun kendaraan secara waktu nyata. Meskipun demikian, sebagian besar berfokus pada satu 
+maupun kendaraan secara \textit{real-time}. Meskipun demikian, sebagian besar berfokus pada satu 
 jenis objek saja, yaitu orang atau kendaraan, dan mengandalkan kelas objek yang tersedia 
 pada dataset umum. Belum ada penelitian yang menangani kombinasi objek khas kawasan 
 wisata Indonesia, termasuk andong, becak, dan bajaj, dalam satu sistem. Perbandingan 
@@ -66,6 +66,16 @@ antar varian model pada sebagian besar penelitian juga terbatas pada satu genera
 Penelitian ini menempatkan diri pada celah tersebut dengan membandingkan varian YOLOv8 
 dan YOLO11 untuk mendeteksi sembilan kelas objek khas kawasan Malioboro secara bersamaan, 
 kemudian mengimplementasikan model terbaik ke dalam sistem pemantauan berbasis web.
+
+Sintesis dari keenam penelitian tersebut memperlihatkan tiga celah yang ditangani penelitian 
+ini. Pertama, belum ada yang membangun satu dataset deteksi yang memuat objek transportasi 
+tradisional Indonesia seperti andong, becak, dan bajaj bersama objek umum dalam satu 
+himpunan kelas. Kedua, perbandingan langsung antara dua generasi YOLO yang setara secara 
+implementasi masih jarang dilakukan pada kondisi data lokal yang timpang. Ketiga, sebagian 
+besar penelitian berhenti pada tahap deteksi atau penghitungan, sedangkan penelitian ini 
+melanjutkannya hingga penerjemahan jumlah deteksi menjadi tingkat kepadatan berbasis standar 
+nasional dan implementasi sistem yang berjalan. Ketiga celah inilah yang menjadi dasar 
+rumusan masalah pada Bab I.
 
 \section{Dasar Teori}
 
@@ -84,7 +94,10 @@ Deteksi objek adalah tugas \textit{computer vision} yang bertujuan mengidentifik
 lokasi dan kategori setiap objek yang ada dalam suatu gambar secara bersamaan 
 \cite{oksuz2021imbalance}. Keluaran dari sistem deteksi objek berupa kotak pembatas 
 (\textit{bounding box}) yang melingkupi setiap objek beserta label kelas dan nilai 
-keyakinan (\textit{confidence score}) yang menyertainya.
+keyakinan (\textit{confidence score}) yang menyertainya. Gabungan informasi lokasi dan 
+kelas inilah yang membedakan deteksi objek dari klasifikasi citra biasa, karena sistem 
+tidak hanya menentukan ada atau tidaknya suatu objek tetapi juga menetapkan posisinya 
+pada citra.
 
 Pendekatan deteksi objek berbasis \textit{deep learning} secara umum dibagi menjadi dua 
 kategori, yaitu \textit{two-stage detector} dan \textit{one-stage detector}. 
@@ -100,10 +113,9 @@ terbatas karena sifat dua tahapnya, yaitu sekitar 5 \textit{frame} per detik pad
 \textit{One-stage detector} menggabungkan kedua tahap tersebut menjadi satu jaringan 
 tunggal yang langsung memprediksi kotak pembatas dan label kelas dari seluruh gambar 
 dalam satu kali evaluasi \cite{redmon2016yolo}. Pendekatan ini jauh lebih cepat 
-dibandingkan \textit{two-stage detector} dan lebih sesuai untuk kebutuhan deteksi waktu 
-nyata, meskipun pada generasi awal memiliki akurasi yang sedikit lebih rendah. Penelitian 
+dibandingkan \textit{two-stage detector} dan lebih sesuai untuk kebutuhan deteksi \textit{real-time}, meskipun pada generasi awal memiliki akurasi yang sedikit lebih rendah. Penelitian 
 ini menggunakan pendekatan \textit{one-stage} karena kebutuhan pemantauan kepadatan 
-secara waktu nyata dari aliran video kamera pengawas.
+secara \textit{real-time} dari \textit{stream} video kamera CCTV.
 
 Komponen penting dalam arsitektur detektor modern adalah \textit{Feature Pyramid Network} 
 (FPN) \cite{lin2017fpn}. FPN membangun representasi piramida fitur multi-skala dari 
@@ -120,19 +132,45 @@ sebagai pendekatan deteksi objek \textit{one-stage} yang memformulasikan deteksi
 masalah regresi tunggal dari piksel gambar ke koordinat kotak pembatas dan probabilitas 
 kelas. Model dasar YOLO mampu memproses gambar pada kecepatan 45 \textit{frame} per detik, 
 sedangkan versi yang lebih ringan mencapai 155 \textit{frame} per detik. Sejak 
-diperkenalkan, arsitektur YOLO telah berkembang melalui banyak iterasi yang membawa 
-peningkatan pada akurasi, efisiensi komputasi, dan kemampuan multitugas 
-\cite{terven2023comprehensive}.
+diperkenalkan, arsitektur YOLO berkembang melalui banyak iterasi yang membawa peningkatan 
+pada akurasi, efisiensi komputasi, dan kemampuan multitugas \cite{terven2023comprehensive}. 
+Secara umum, setiap varian YOLO tersusun atas tiga komponen utama, yaitu \textit{backbone} 
+yang mengekstraksi fitur dari citra, \textit{neck} yang menggabungkan fitur lintas skala, 
+dan \textit{head} yang menghasilkan prediksi kotak pembatas beserta kelasnya.
 
 YOLOv8 dirilis oleh Ultralytics pada Januari 2023 dan tersedia dalam lima ukuran, yaitu 
-nano (n), small (s), medium (m), large (l), dan extra-large (x) 
-\cite{terven2023comprehensive}. Arsitektur YOLOv8 memperkenalkan modul C2f 
-(\textit{cross-stage partial bottleneck with two convolutions}) pada \textit{backbone} 
-sebagai pengganti modul C3 pada versi sebelumnya. C2f menggabungkan fitur tingkat tinggi 
-dengan informasi kontekstual untuk meningkatkan akurasi deteksi. YOLOv8 juga menggunakan 
-model \textit{anchor-free} dengan \textit{decoupled head} yang memproses tugas klasifikasi 
-dan regresi kotak pembatas secara terpisah, sehingga mengurangi konflik antar-tugas dan 
-meningkatkan konvergensi pelatihan.
+\textit{nano} (n), \textit{small} (s), \textit{medium} (m), \textit{large} (l), dan 
+\textit{extra-large} (x) \cite{terven2023comprehensive}. Arsitektur YOLOv8 memperkenalkan 
+modul C2f (\textit{cross-stage partial bottleneck with two convolutions}) pada 
+\textit{backbone} sebagai pengganti modul C3 pada versi sebelumnya, yang menggabungkan 
+fitur tingkat tinggi dengan informasi kontekstual untuk meningkatkan akurasi deteksi. 
+YOLOv8 juga menggunakan model \textit{anchor-free} dengan \textit{decoupled head} yang 
+memproses tugas klasifikasi dan regresi kotak pembatas secara terpisah, sehingga mengurangi 
+konflik antar-tugas dan meningkatkan konvergensi pelatihan. Susunan menyeluruh 
+\textit{backbone}, \textit{neck}, dan \textit{head} YOLOv8 ditunjukkan pada Gambar 
+\ref{fig:arsitektur_yolov8}.
+
+\begin{figure}[htbp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[
+        io/.style={draw, rounded corners, align=center, font=\footnotesize, minimum height=1cm, text width=2cm, fill=gray!5},
+        blok/.style={draw, rounded corners, align=center, font=\footnotesize, minimum height=1.6cm, text width=2.6cm, fill=gray!12},
+        panah/.style={-{Latex[length=2.5mm]}, very thick}
+    ]
+        \node[io] (in) {Citra\\masukan};
+        \node[blok, right=0.8cm of in] (bb) {\textbf{Backbone}\\ekstraksi fitur\\(blok C2f)};
+        \node[blok, right=0.8cm of bb] (nk) {\textbf{Neck}\\SPPF + PAN-FPN\\penggabung skala};
+        \node[blok, right=0.8cm of nk] (hd) {\textbf{Head}\\\textit{anchor-free},\\\textit{decoupled}};
+        \node[io, right=0.8cm of hd] (out) {Kotak\\pembatas\\+ kelas};
+        \draw[panah] (in) -- (bb);
+        \draw[panah] (bb) -- (nk);
+        \draw[panah] (nk) -- (hd);
+        \draw[panah] (hd) -- (out);
+    \end{tikzpicture}}
+    \caption{Skema sederhana arsitektur YOLOv8 dengan alur \textit{backbone}--\textit{neck}--\textit{head}, disusun dari uraian pada \cite{terven2023comprehensive}.}
+    \label{fig:arsitektur_yolov8}
+\end{figure}
 
 YOLO11 dirilis oleh Ultralytics pada September 2024 sebagai penerus YOLOv8 
 \cite{khanam2024yolov11}. Khanam dan Hussain menganalisis inovasi arsitektur YOLO11, yang 
@@ -141,62 +179,222 @@ mencakup blok C3k2 (\textit{Cross Stage Partial with kernel size 2}), komponen S
 (\textit{Convolutional block with Parallel Spatial Attention}). Blok C3k2 meningkatkan 
 ekstraksi fitur dengan kernel berukuran lebih kecil yang lebih efisien secara komputasi, 
 sedangkan C2PSA menambahkan mekanisme perhatian spasial paralel untuk memperkuat kemampuan 
-model menangkap konteks global dalam gambar. YOLO11 tersedia dalam skala nano hingga 
-extra-large dan mendukung berbagai tugas \textit{computer vision} termasuk deteksi objek, 
-segmentasi, dan estimasi pose.
+model menangkap konteks global dalam gambar. YOLO11 tersedia dalam skala \textit{nano} 
+hingga \textit{extra-large} dan mendukung berbagai tugas \textit{computer vision} termasuk 
+deteksi objek, segmentasi, dan estimasi pose. Susunan arsitekturnya beserta perbedaan utama 
+terhadap YOLOv8 ditunjukkan pada Gambar \ref{fig:arsitektur_yolo11}.
 
-Kedua model tersebut, yaitu YOLOv8 dan YOLO11, dipilih dalam penelitian ini karena 
-keduanya merupakan model resmi Ultralytics yang berbagi kerangka pelatihan, format data, 
-dan antarmuka pemrograman yang identik. Keseragaman ini memungkinkan perbandingan yang 
-terkontrol, di mana perbedaan performa dapat diatribusikan pada perbedaan arsitektur dan 
-bukan pada perbedaan implementasi. Selain itu, kedua model memiliki skalabilitas yang 
-baik untuk perangkat dengan sumber daya terbatas, yang relevan untuk kebutuhan inferensi 
-waktu nyata pada sistem pemantauan \cite{terven2023comprehensive}.
+\begin{figure}[htbp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[
+        io/.style={draw, rounded corners, align=center, font=\footnotesize, minimum height=1cm, text width=2cm, fill=gray!5},
+        blok/.style={draw, rounded corners, align=center, font=\footnotesize, minimum height=1.6cm, text width=2.6cm, fill=gray!12},
+        tekan/.style={draw, rounded corners, align=center, font=\footnotesize, minimum height=1.6cm, text width=2.6cm, fill=gray!25},
+        panah/.style={-{Latex[length=2.5mm]}, very thick}
+    ]
+        \node[io] (in) {Citra\\masukan};
+        \node[tekan, right=0.8cm of in] (bb) {\textbf{Backbone}\\blok C3k2 + SPPF\\+ C2PSA (perhatian)};
+        \node[blok, right=0.8cm of bb] (nk) {\textbf{Neck}\\PAN-FPN\\penggabung skala};
+        \node[blok, right=0.8cm of nk] (hd) {\textbf{Head}\\\textit{anchor-free},\\\textit{decoupled}};
+        \node[io, right=0.8cm of hd] (out) {Kotak\\pembatas\\+ kelas};
+        \draw[panah] (in) -- (bb);
+        \draw[panah] (bb) -- (nk);
+        \draw[panah] (nk) -- (hd);
+        \draw[panah] (hd) -- (out);
+    \end{tikzpicture}}
+    \caption{Skema sederhana arsitektur YOLO11, dengan kerangka yang sama seperti YOLOv8 dan tambahan blok C3k2 serta modul perhatian C2PSA pada \textit{backbone}, disusun dari uraian pada \cite{khanam2024yolov11}.}
+    \label{fig:arsitektur_yolo11}
+\end{figure}
 
-Model transformer seperti RT-DETR \cite{zhao2024rtdetr} merupakan alternatif yang 
-kompetitif dari segi akurasi, namun YOLOv8 dan YOLO11 dipilih karena efisiensi parameter, 
-ekosistem yang matang, serta kemampuan deployment yang lebih luas pada berbagai jenis 
-perangkat mulai dari server hingga perangkat tepi.
+Secara konseptual, YOLOv8 dan YOLO11 berbagi kerangka tiga bagian yang sama seperti pada 
+Gambar \ref{fig:arsitektur_yolov8} dan Gambar \ref{fig:arsitektur_yolo11}. \textit{Backbone} 
+memindai citra masukan dan menyaringnya menjadi fitur, mulai dari pola sederhana seperti tepi 
+hingga bentuk objek yang lebih utuh. \textit{Neck} kemudian menggabungkan fitur dari berbagai 
+tingkat kedalaman agar objek besar maupun kecil sama-sama terwakili, lalu \textit{head} di 
+ujungnya mengubah fitur itu menjadi keluaran akhir berupa kotak pembatas beserta kelasnya. 
+Perbedaan utama YOLO11 hanya terletak pada isi \textit{backbone}, yaitu blok C3k2 yang lebih 
+ringan menggantikan blok C2f, ditambah modul perhatian C2PSA yang membantu model memusatkan 
+perhatian pada bagian citra yang penting. Karena kerangkanya identik dan hanya berbeda pada 
+komponen internal inilah perbandingan keduanya menjadi setara, sehingga perbedaan performa 
+dapat dikaitkan pada perbaikan arsitektur, bukan pada perbedaan kerangka.
+
+Kedua model tersebut, yaitu YOLOv8 dan YOLO11, dipilih dalam penelitian ini karena keduanya 
+adalah model resmi Ultralytics yang berbagi kerangka pelatihan, format data, dan antarmuka 
+pemrograman yang identik. Keseragaman ini memungkinkan perbandingan yang terkontrol, saat 
+perbedaan performa dapat diatribusikan pada perbedaan arsitektur dan bukan pada perbedaan 
+implementasi. Selain itu, kedua model memiliki skalabilitas yang baik untuk perangkat 
+dengan sumber daya terbatas, yang relevan untuk kebutuhan inferensi \textit{real-time} pada 
+sistem pemantauan \cite{terven2023comprehensive}.
+
+Model \textit{transformer} seperti RT-DETR \cite{zhao2024rtdetr} adalah alternatif yang 
+kompetitif dari segi akurasi. Akan tetapi, YOLOv8 dan YOLO11 dipilih karena efisiensi 
+parameter, ekosistem yang matang, serta kemampuan \textit{deployment} yang lebih luas pada 
+berbagai jenis perangkat mulai dari server hingga \textit{edge device}. Pertimbangan 
+arsitektur yang lebih lengkap antara YOLO, RT-DETR, dan Faster R-CNN diuraikan pada Subbab 
+\ref{sec:analisis_perbandingan}.
 
 \subsection{Metrik Evaluasi Deteksi Objek}
 
 Evaluasi performa model deteksi objek menggunakan sejumlah metrik standar yang saling 
-melengkapi \cite{padilla2020survey}. Metrik-metrik ini digunakan secara konsisten pada 
-seluruh eksperimen dalam penelitian ini.
+melengkapi \cite{padilla2020survey}. Metrik-metrik ini mengukur dua aspek yang berbeda, 
+yaitu ketepatan lokalisasi kotak pembatas dan kebenaran klasifikasi kelas. Penjelasan 
+berikut menguraikan tiap metrik beserta cara membacanya, lengkap dengan contoh angka, agar 
+makna setiap nilai dapat dipahami tanpa latar belakang khusus deteksi objek. Seluruh metrik 
+ini digunakan secara konsisten pada semua eksperimen dalam penelitian ini agar perbandingan 
+antar varian model bersifat setara.
 
-\textit{Intersection over Union} (IoU) mengukur seberapa besar tumpang tindih antara 
-kotak pembatas hasil prediksi dan kotak pembatas acuan (\textit{ground truth}). IoU 
-dihitung sebagai rasio luas irisan terhadap luas gabungan kedua kotak. Sebuah prediksi 
-dinyatakan benar (\textit{true positive}) jika nilai IoU-nya melampaui ambang tertentu.
+\textit{Intersection over Union} (IoU) mengukur seberapa besar tumpang tindih antara kotak 
+pembatas hasil prediksi $B_{p}$ dan kotak pembatas acuan $B_{gt}$ (\textit{ground truth}). 
+Nilai IoU dihitung sebagai rasio luas irisan terhadap luas gabungan kedua kotak, 
+sebagaimana dinyatakan pada Persamaan (\ref{eq:iou}) dan diilustrasikan pada Gambar 
+\ref{fig:iou}. Nilainya berkisar dari 0 sampai 1, dengan 0 berarti kedua kotak sama sekali 
+tidak bertumpang tindih dan 1 berarti keduanya berimpit sempurna. Sebagai contoh, jika kotak 
+prediksi dan kotak acuan memiliki luas irisan 60 satuan dan luas gabungan 100 satuan, maka 
+IoU bernilai 0,6, yang menandakan lokalisasi cukup baik tetapi belum sempurna. Sebuah 
+prediksi dinyatakan benar (\textit{true positive}) jika nilai IoU-nya melampaui ambang 
+tertentu, yang lazimnya ditetapkan 0,5.
 
-\textit{Precision} mengukur proporsi prediksi positif yang benar dari seluruh prediksi 
-yang dihasilkan model, sedangkan \textit{recall} mengukur proporsi objek yang berhasil 
-dideteksi dari seluruh objek yang sebenarnya ada. Kedua metrik ini dihitung per kelas.
+\begin{equation}
+    \mathit{IoU} = \frac{\text{luas}(B_{p} \cap B_{gt})}{\text{luas}(B_{p} \cup B_{gt})}
+    \label{eq:iou}
+\end{equation}
 
-\textit{Average Precision} (AP) merangkum kinerja detektor dengan menghitung luas area 
-di bawah kurva \textit{precision-recall} \cite{padilla2020survey}. AP dihitung secara 
-terpisah untuk setiap kelas objek. \textit{mean Average Precision} (mAP) adalah rata-rata 
-AP di seluruh kelas yang dievaluasi.
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[scale=1.0]
+        \fill[gray!35] (1.2,0.6) rectangle (2.5,1.8);
+        \draw[thick, blue] (0,0) rectangle (2.5,1.8);
+        \draw[thick, red] (1.2,0.6) rectangle (3.7,2.4);
+        \node[blue] at (0.45,1.55) {\small $B_{gt}$};
+        \node[red] at (3.25,2.15) {\small $B_{p}$};
+        \node[font=\scriptsize] at (1.85,1.2) {irisan};
+    \end{tikzpicture}
+    \caption{Ilustrasi \textit{Intersection over Union}: luas irisan (area abu-abu) dibagi luas gabungan kedua kotak pembatas.}
+    \label{fig:iou}
+\end{figure}
 
-Dataset COCO \cite{lin2014coco} memperkenalkan dua varian mAP yang digunakan secara luas 
-sebagai standar evaluasi. mAP50 dihitung pada ambang IoU 0,50, sementara mAP50-95 
-merupakan rata-rata mAP pada ambang IoU dari 0,50 hingga 0,95 dengan langkah 0,05. 
-mAP50-95 memberikan evaluasi yang lebih ketat karena memperhitungkan ketepatan lokalisasi 
-kotak pembatas pada berbagai tingkat kesesuaian. Dataset COCO sendiri memuat anotasi 91 
-jenis objek pada 328 ribu gambar dengan total 2,5 juta \textit{instance} berlabel, dan 
-telah menjadi tolok ukur standar untuk evaluasi detektor objek.
+Berdasarkan kecocokan IoU tersebut, setiap prediksi dikelompokkan menjadi salah satu dari 
+tiga kategori yang dirangkum pada Tabel \ref{tab:tpfpfn}. \textit{True positive} (TP) adalah 
+prediksi yang benar, yaitu kotak yang melampaui ambang IoU dan berlabel kelas yang tepat. 
+\textit{False positive} (FP) adalah prediksi yang salah, misalnya mendeteksi objek yang 
+sebenarnya tidak ada atau memberi label kelas yang keliru. \textit{False negative} (FN) 
+adalah objek nyata yang gagal dideteksi oleh model. Ketiga kategori inilah yang menjadi 
+bahan dasar perhitungan precision dan recall.
 
-\textit{F1-score} adalah rata-rata harmonik dari \textit{precision} dan \textit{recall}, 
-memberikan metrik tunggal yang menyeimbangkan kedua aspek tersebut. F1 sangat berguna 
-untuk mengevaluasi kinerja per kelas pada kondisi ketidakseimbangan kelas, karena 
-memberikan penalti yang setara terhadap \textit{precision} maupun \textit{recall} yang 
-rendah.
+\begin{table}[h]
+    \centering
+    \caption{Kategori hasil prediksi pada evaluasi deteksi objek.}
+    \label{tab:tpfpfn}
+    \begin{tabular}{|l|p{8.2cm}|}
+        \hline
+        \textbf{Kategori} & \textbf{Keterangan} \\
+        \hline \hline
+        \textit{True positive} (TP) & Objek nyata yang terdeteksi dengan kotak yang tepat dan kelas yang benar. \\
+        \hline
+        \textit{False positive} (FP) & Prediksi yang tidak sesuai objek nyata, baik karena salah lokasi maupun salah kelas. \\
+        \hline
+        \textit{False negative} (FN) & Objek nyata yang tidak terdeteksi oleh model. \\
+        \hline
+    \end{tabular}
+\end{table}
 
-Dalam penelitian ini, metrik utama yang digunakan adalah mAP50, mAP50-95, 
-F1-\textit{score} per kelas, dan \textit{confusion matrix} untuk menganalisis pola 
-kesalahan deteksi.
+\textit{Precision} mengukur ketelitian model, yaitu proporsi prediksi positif yang benar 
+dari seluruh prediksi yang dihasilkan, sebagaimana Persamaan (\ref{eq:precision}). 
+\textit{Recall} mengukur kelengkapan model, yaitu proporsi objek nyata yang berhasil 
+dideteksi dari seluruh objek yang ada, sebagaimana Persamaan (\ref{eq:recall}). Sebagai 
+ilustrasi, misalkan pada suatu citra terdapat 50 objek orang dan model menghasilkan 60 
+prediksi orang. Jika 45 prediksi benar (TP), 15 prediksi salah (FP), dan 5 objek tidak 
+terdeteksi (FN), maka precision bernilai $45/60 = 0,75$ dan recall bernilai $45/50 = 0,90$. 
+Nilai ini berarti tiga dari empat prediksi model benar, sementara sembilan dari sepuluh 
+objek nyata berhasil tertangkap.
+
+\begin{equation}
+    \mathit{Precision} = \frac{\mathit{TP}}{\mathit{TP} + \mathit{FP}}
+    \label{eq:precision}
+\end{equation}
+
+\begin{equation}
+    \mathit{Recall} = \frac{\mathit{TP}}{\mathit{TP} + \mathit{FN}}
+    \label{eq:recall}
+\end{equation}
+
+Precision dan recall sering kali berlawanan arah, karena model yang berani memprediksi 
+banyak objek cenderung menaikkan recall tetapi menurunkan precision, begitu pula 
+sebaliknya. Hubungan keduanya digambarkan oleh kurva \textit{precision-recall}, yaitu grafik 
+precision terhadap recall saat ambang keyakinan model divariasikan dari ketat ke longgar. 
+\textit{Average Precision} (AP) merangkum kurva ini menjadi satu angka, yaitu luas area di 
+bawah kurva \textit{precision-recall} seperti pada Persamaan (\ref{eq:ap}) dan diilustrasikan 
+pada Gambar \ref{fig:pr_curve}, dengan $p(r)$ adalah precision pada tingkat recall $r$ 
+\cite{padilla2020survey}. Semakin luas area di bawah kurva, semakin baik model menjaga 
+precision tinggi sambil meningkatkan recall, sehingga nilai AP yang mendekati 1 menandakan 
+detektor yang kuat pada satu kelas.
+
+\begin{equation}
+    \mathit{AP} = \int_{0}^{1} p(r)\, dr
+    \label{eq:ap}
+\end{equation}
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[scale=1.0]
+        \draw[->] (0,0) -- (5.2,0) node[right, font=\small] {\textit{recall}};
+        \draw[->] (0,0) -- (0,4.2) node[above, font=\small] {\textit{precision}};
+        \node[font=\scriptsize] at (-0.25,-0.25) {0};
+        \node[font=\scriptsize] at (4.8,-0.25) {1};
+        \node[font=\scriptsize] at (-0.25,3.8) {1};
+        \fill[blue!12] (0,0) -- (0,3.7) -- (1.6,3.6) -- (2.7,3.3) -- (3.6,2.5) -- (4.4,1.1) -- (4.75,0.25) -- (4.75,0) -- cycle;
+        \draw[thick, blue] (0,3.7) -- (1.6,3.6) -- (2.7,3.3) -- (3.6,2.5) -- (4.4,1.1) -- (4.75,0.25);
+        \node[font=\scriptsize] at (2.2,1.7) {AP = luas area};
+    \end{tikzpicture}
+    \caption{Kurva \textit{precision-recall}: \textit{Average Precision} (AP) adalah luas area di bawah kurva (area arsir).}
+    \label{fig:pr_curve}
+\end{figure}
+
+\textit{mean Average Precision} (mAP) adalah rata-rata AP di seluruh $N$ kelas yang 
+dievaluasi, sebagaimana Persamaan (\ref{eq:map}). Nilai mAP memberikan satu angka tunggal 
+yang merangkum performa model pada semua kelas sekaligus, sehingga memudahkan perbandingan 
+antar model. Karena dirata-ratakan, mAP yang tinggi belum menjamin tiap kelas terdeteksi 
+baik, sehingga analisis per kelas tetap diperlukan untuk kasus dengan kelas yang timpang.
+
+\begin{equation}
+    \mathit{mAP} = \frac{1}{N} \sum_{i=1}^{N} \mathit{AP}_{i}
+    \label{eq:map}
+\end{equation}
+
+Dataset COCO \cite{lin2014coco} memperkenalkan dua varian mAP yang kini menjadi standar 
+evaluasi, yaitu mAP50 dan mAP50-95. mAP50 dihitung pada ambang IoU tunggal 0,50, sehingga 
+hanya menuntut kotak prediksi kira-kira tepat dan bersifat longgar terhadap ketepatan 
+lokalisasi. mAP50-95 adalah rata-rata mAP pada sepuluh ambang IoU dari 0,50 hingga 0,95 
+dengan langkah 0,05, sebagaimana Persamaan (\ref{eq:map5095}), sehingga menuntut kotak yang 
+makin presisi pada ambang yang makin tinggi. Analoginya, mAP50 menilai apakah model 
+menemukan objek di tempat yang kurang lebih benar, sedangkan mAP50-95 menilai seberapa rapi 
+kotak itu menempel pada objek. Sebagai gambaran skala, COCO sendiri memuat anotasi 91 jenis 
+objek pada 328 ribu gambar dengan total 2,5 juta \textit{instance} berlabel.
+
+\begin{equation}
+    \text{mAP50-95} = \frac{1}{10} \sum_{t \in \{0{,}50,\, 0{,}55,\, \dots,\, 0{,}95\}} \mathit{mAP}_{t}
+    \label{eq:map5095}
+\end{equation}
+
+\textit{F1-score} adalah rata-rata harmonik dari precision dan recall yang dinyatakan pada 
+Persamaan (\ref{eq:f1}), memberikan satu angka yang menyeimbangkan ketelitian dan 
+kelengkapan. Berbeda dari rata-rata biasa, rata-rata harmonik menjatuhkan nilai F1 mendekati 
+nilai terkecil di antara precision dan recall, sehingga model hanya memperoleh F1 tinggi 
+jika kedua-duanya tinggi. Pada contoh sebelumnya dengan precision 0,75 dan recall 0,90, 
+nilai F1 adalah $2 \cdot (0,75 \cdot 0,90)/(0,75 + 0,90) \approx 0,82$. Sifat ini membuat F1 
+sangat berguna untuk mengevaluasi kinerja per kelas pada kondisi ketidakseimbangan kelas, 
+karena memberi penalti yang setara terhadap precision maupun recall yang rendah. Pada 
+penelitian ini, metrik utama yang digunakan adalah mAP50, mAP50-95, F1-\textit{score} per 
+kelas, dan \textit{confusion matrix} untuk menganalisis pola kesalahan deteksi antar kelas.
+
+\begin{equation}
+    \mathit{F1} = 2 \cdot \frac{\mathit{Precision} \cdot \mathit{Recall}}{\mathit{Precision} + \mathit{Recall}}
+    \label{eq:f1}
+\end{equation}
 
 \subsection{Ketidakseimbangan Kelas pada Deteksi Objek}
+\label{sec:ketidakseimbangan}
 
 Ketidakseimbangan kelas adalah kondisi ketika jumlah \textit{instance} antar kelas dalam 
 dataset berbeda jauh. Oksuz dkk. \cite{oksuz2021imbalance} mengidentifikasi 
@@ -215,8 +413,9 @@ pengumpulan data.
 
 Ketidakseimbangan ini diperkirakan berpengaruh pada performa per kelas model yang dilatih, 
 khususnya pada kelas dengan \textit{instance} sedikit seperti truk, bajaj, dan sepeda. 
-Analisis pengaruh ketidakseimbangan ini terhadap F1-\textit{score} per kelas disajikan 
-pada BAB IV.
+Kelas mayoritas seperti orang cenderung lebih mudah dipelajari karena contohnya berlimpah, 
+sedangkan kelas minoritas berisiko terabaikan meskipun secara visual cukup khas. Analisis 
+pengaruh ketidakseimbangan ini terhadap F1-\textit{score} per kelas disajikan pada Bab IV.
 
 \subsection{Anotasi Semi-Otomatis}
 
@@ -240,29 +439,86 @@ integritas evaluasi. Rincian pipeline anotasi diuraikan pada BAB III.
 
 Tingkat pelayanan (\textit{level of service}, LOS) pejalan kaki adalah konsep kuantitatif 
 yang mengklasifikasikan kondisi pergerakan pejalan kaki berdasarkan kepadatan dan 
-kenyamanan. Fruin \cite{fruin1971designing} mendefinisikan enam tingkat pelayanan 
-(A hingga F) berdasarkan studi fotografi \textit{time-lapse} terhadap pergerakan pejalan 
-kaki, dengan parameter utama berupa kepadatan orang per meter persegi dan ruang yang 
-tersedia per pejalan kaki. Tingkat A menggambarkan kondisi pergerakan bebas tanpa konflik 
-antar-pejalan kaki, sedangkan tingkat E dan F menggambarkan kondisi padat di mana kontak 
-fisik tidak terhindarkan dan pergerakan mandiri menjadi terbatas.
+kenyamanan. Fruin \cite{fruin1971designing} mendefinisikan enam tingkat pelayanan (A hingga 
+F) berdasarkan studi fotografi \textit{time-lapse} terhadap pergerakan pejalan kaki, dengan 
+parameter utama berupa kepadatan orang per meter persegi dan ruang yang tersedia per pejalan 
+kaki. Tingkat A menggambarkan kondisi pergerakan bebas tanpa konflik antar-pejalan kaki, 
+sedangkan tingkat E dan F menggambarkan kondisi padat saat kontak fisik tidak terhindarkan 
+dan pergerakan mandiri menjadi terbatas.
 
 Di Indonesia, konsep LOS ini diadopsi dalam Peraturan Menteri PUPR Nomor 03/PRT/M/2014 
 tentang Pedoman Perencanaan, Penyediaan, dan Pemanfaatan Prasarana dan Sarana Jaringan 
 Pejalan Kaki di Kawasan Perkotaan \cite{pupr2014pedoman}, yang menjadi acuan standar 
-nasional untuk perencanaan jalur pedestrian. Penerapan standar nasional ini memberikan 
-dasar ilmiah yang terukur untuk penetapan ambang notifikasi kepadatan pada sistem 
-pemantauan yang dibangun dalam penelitian ini, khususnya untuk kelas orang pada kamera 
-yang dikalibrasi.
+nasional untuk perencanaan jalur pedestrian. Pedoman tersebut menetapkan ambang kuantitatif 
+tiap tingkat pelayanan berdasarkan luas ruang per orang, kecepatan rata-rata, volume arus, 
+dan rasio volume terhadap kapasitas, sebagaimana dirangkum pada Tabel \ref{tab:los}. Nilai 
+ambang inilah yang menjadi dasar terukur bagi penetapan notifikasi kepadatan pada sistem 
+yang dibangun, khususnya untuk kelas orang pada kamera yang dikalibrasi.
 
-Untuk menghitung kepadatan dari hasil deteksi, diperlukan pemetaan antara koordinat 
-piksel dan koordinat nyata di bidang tanah. Pemetaan ini dilakukan melalui estimasi 
-homografi planar, yaitu transformasi perspektif yang mengubah titik-titik pada bidang 
-gambar menjadi koordinat metrik di bidang tanah menggunakan korespondensi titik acuan 
-yang diketahui dimensinya \cite{fruin1971designing}. Dengan homografi yang telah 
-dikalibrasi, jumlah objek yang terdeteksi dalam suatu zona dapat dibagi dengan luas zona 
-tersebut dalam meter persegi untuk memperoleh estimasi kepadatan, yang kemudian dipetakan 
-ke tingkat pelayanan sesuai klasifikasi Fruin dan Permen PUPR 2014.
+\begin{table}[h]
+    \centering
+    \caption{Tingkatan standar pelayanan jalur pejalan kaki menurut Permen PUPR Nomor 03/PRT/M/2014 \cite{pupr2014pedoman}.}
+    \label{tab:los}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{Tingkat} & \textbf{Ruang} & \textbf{Kecepatan} & \textbf{Volume Arus} & \textbf{Rasio} \\
+        \textbf{Pelayanan} & \textbf{(m\textsuperscript{2}/orang)} & \textbf{(m/menit)} & \textbf{(orang/m/menit)} & \textbf{V/C} \\
+        \hline \hline
+        A & $\geq$ 12 & $\geq$ 78 & $\leq$ 6,7 & $\leq$ 0,08 \\
+        B & $\geq$ 3,6 & $\geq$ 75 & $\leq$ 23 & $\leq$ 0,28 \\
+        C & $\geq$ 2,2 & $\geq$ 72 & $\leq$ 33 & $\leq$ 0,40 \\
+        D & $\geq$ 1,4 & $\geq$ 68 & $\leq$ 50 & $\leq$ 0,60 \\
+        E & $\geq$ 0,5 & $\geq$ 45 & $\leq$ 83 & $\leq$ 1,00 \\
+        F & $<$ 0,5 & $<$ 45 & variabel & 1,00 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Pedoman tersebut tidak hanya mengklasifikasikan kondisi, tetapi juga menetapkan tingkat 
+pelayanan minimum yang berbeda menurut peruntukan kawasan. Untuk kawasan campuran serta 
+kawasan di sekitar simpul transportasi, dua karakter yang melekat pada kawasan Malioboro 
+sebagai pusat perdagangan dan wisata yang berdekatan dengan Stasiun Tugu, pedoman menetapkan 
+tingkat pelayanan minimum Standar D, yaitu ruang pejalan kaki paling sedikit 1,4 
+m\textsuperscript{2} per orang \cite{pupr2014pedoman}. Standar D menandai batas bawah 
+kondisi yang masih nyaman, saat pejalan kaki sudah harus sering menyesuaikan kecepatan dan 
+posisi karena potensi konflik arus. Ambang ini menjadi rujukan kuantitatif yang masuk akal 
+untuk menandai kondisi kepadatan yang perlu diwaspadai pada sistem pemantauan.
+
+Untuk menghitung kepadatan dari hasil deteksi, diperlukan pemetaan antara koordinat piksel 
+dan koordinat nyata di bidang tanah. Pemetaan ini dilakukan melalui estimasi homografi 
+planar, yaitu transformasi perspektif yang mengubah titik-titik pada bidang gambar menjadi 
+koordinat metrik di bidang tanah menggunakan korespondensi titik acuan yang diketahui 
+dimensinya \cite{fruin1971designing}. Dengan homografi yang telah dikalibrasi, jumlah objek 
+yang terdeteksi dalam suatu zona dapat dibagi dengan luas zona tersebut dalam meter persegi 
+untuk memperoleh estimasi kepadatan. Nilai kepadatan itu kemudian dipetakan ke tingkat 
+pelayanan sesuai klasifikasi Fruin dan Permen PUPR 2014 pada Tabel \ref{tab:los}.
+
+\subsection{Arsitektur Aplikasi Web Pemantauan}
+
+Sistem pemantauan yang dibangun mengikuti arsitektur klien-server, yaitu pemisahan antara 
+\textit{server} yang memproses data dan klien yang menampilkannya kepada pengguna. 
+Komunikasi antara keduanya menggunakan gaya \textit{Representational State Transfer} (REST), 
+yaitu sekumpulan aturan perancangan antarmuka berbasis HTTP yang menjadikan tiap sumber daya 
+dapat diakses melalui alamat seragam dengan operasi standar \cite{fielding2000rest}. 
+Pendekatan ini membuat sisi pemroses dan sisi tampilan dapat dikembangkan secara terpisah 
+selama keduanya menyepakati antarmuka yang sama. Keterpisahan inilah yang memungkinkan model 
+deteksi berjalan di sisi \textit{server} tanpa membebani perangkat pengguna.
+
+Pemantauan kepadatan menuntut pembaruan tampilan yang cepat begitu hasil deteksi tersedia. 
+Pada model permintaan biasa, klien harus berulang kali menanyakan data terbaru ke \textit{server} 
+(\textit{polling}), yang boros dan menimbulkan jeda. WebSocket menyediakan kanal komunikasi 
+dua arah yang tetap terbuka di atas satu sambungan, sehingga \textit{server} dapat langsung mendorong 
+data ke klien tanpa diminta setiap kali \cite{fette2011websocket}. Mekanisme ini membuat angka 
+kepadatan dan notifikasi dapat diperbarui hampir seketika tanpa memuat ulang halaman.
+
+Selain angka, sistem juga menampilkan \textit{stream} video beserta kotak deteksinya. 
+Tampilan ini menggunakan \textit{Motion JPEG} (MJPEG), yaitu teknik yang mengirim video 
+sebagai rentetan citra JPEG yang masing-masing dikodekan secara mandiri \cite{wallace1992jpeg}. 
+Karena tiap \textit{frame} berdiri sendiri, MJPEG mudah dipadukan dengan hasil inferensi dan 
+dapat ditampilkan langsung oleh peramban tanpa pemutar khusus. Kesederhanaan dan latensi 
+rendahnya membuat MJPEG cocok untuk menampilkan hasil deteksi secara \textit{real-time} pada 
+antarmuka pemantauan. Penerapan ketiga konsep ini pada sistem yang dibangun diuraikan pada 
+Bab III.
 
 \section{Analisis Perbandingan Metode}
 
@@ -286,7 +542,7 @@ dua tahap, yaitu pembangkitan usulan wilayah (\textit{region proposal}) dan klas
 pada tiap usulan tersebut \cite{ren2015faster}. Pemisahan ini menghasilkan akurasi 
 lokalisasi yang tinggi, tetapi rangkaian dua tahap membuat latensi inferensi meningkat 
 sehingga sulit memenuhi kebutuhan \textit{real-time} pada perangkat berdaya rendah. Untuk 
-sistem yang memproses aliran kamera secara terus-menerus, latensi yang tinggi menjadi 
+sistem yang memproses \textit{stream} kamera secara terus-menerus, latensi yang tinggi menjadi 
 hambatan utama.
 
 Pendekatan berbasis \textit{transformer} yang diwakili RT-DETR menghilangkan tahap 
@@ -355,14 +611,28 @@ performa di antara keduanya dapat diatribusikan ke arsitektur, bukan ke perbedaa
 implementasi \textit{framework}, sehingga perbandingan menjadi terkontrol secara 
 metodologis.
 
-Versi YOLO lain sengaja tidak dimasukkan untuk menjaga kontrol tersebut. YOLOv9 
-dikembangkan dari basis kode YOLOv5 dan diposisikan sebagai model eksperimental, 
-sedangkan YOLOv10 dikembangkan oleh kelompok peneliti yang berbeda dengan mekanisme 
-pelatihan tanpa NMS. Versi yang lebih baru seperti YOLOv12 belum memiliki kematangan 
-tooling dan dukungan yang setara. Memasukkan versi-versi tersebut ke dalam perbandingan 
-akan menambahkan variabel pengganggu berupa perbedaan asal basis kode dan filosofi desain. 
-Membatasi perbandingan pada dua model unggulan Ultralytics yang setara justru menghasilkan 
-perbandingan yang lebih valid.
+Versi YOLO lain sengaja tidak dimasukkan agar kontrol metodologis tetap terjaga. YOLOv9 
+\cite{wang2024yolov9} dikembangkan oleh kelompok penulis YOLOv7 di atas basis kode YOLOv5 
+dengan memperkenalkan \textit{Programmable Gradient Information} (PGI) dan arsitektur GELAN, 
+sehingga garis keturunan dan filosofi desainnya berbeda dari model resmi Ultralytics. 
+YOLOv10 \cite{wang2024yolov10} dikembangkan oleh kelompok peneliti Universitas Tsinghua dan 
+menekankan inferensi \textit{end-to-end} tanpa \textit{non-maximum suppression} melalui 
+mekanisme \textit{consistent dual assignments}, suatu arah desain yang berbeda dari YOLOv8 
+dan YOLO11. YOLOv12 \cite{tian2025yolov12} mengusung desain \textit{attention-centric} 
+dengan mekanisme \textit{area attention}, sedangkan YOLO26 \cite{jocher2026yolo26} yang 
+dirilis Ultralytics pada 2026 menjadikan inferensi \textit{end-to-end} tanpa NMS dan regresi 
+tanpa \textit{Distribution Focal Loss} sebagai bawaan. Memasukkan versi-versi tersebut ke 
+dalam satu perbandingan akan menambah variabel pengganggu berupa perbedaan asal basis kode, 
+filosofi desain, dan kematangan \textit{tooling}, sehingga efek arsitektur tidak lagi dapat 
+diisolasi.
+
+Kematangan ekosistem juga menjadi pertimbangan praktis. Pada saat penelitian ini dilakukan, 
+YOLOv8 dan YOLO11 telah memiliki dukungan \textit{tooling}, dokumentasi, dan bobot 
+\textit{pretrained} yang stabil di bawah satu pustaka resmi, sedangkan sebagian versi yang 
+lebih baru masih berkembang cepat dan belum tentu setara dukungannya. Membatasi perbandingan 
+pada dua model unggulan Ultralytics yang berbagi kerangka pelatihan, format data, dan 
+antarmuka yang identik justru menghasilkan perbandingan yang lebih valid, karena perbedaan 
+performa dapat diatribusikan pada arsitektur dan bukan pada perbedaan implementasi.
 
 Empat ukuran model, yaitu \textit{nano} (n), \textit{small} (s), \textit{medium} (m), dan 
 \textit{large} (l), diuji pada tiap versi untuk memetakan keterkaitan antara ukuran model, 

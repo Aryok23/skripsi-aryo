@@ -1,5 +1,35 @@
 \textit{
-	Abstract ditulis italic (miring) menggunakan bahasa Inggris dengan jarak antar baris 1 spasi dan maksimal 1 halaman. Abstract adalah versi Bahasa Inggris dari intisari. Abstract dapat ditulis dalam beberapa paragraf. Baris pertama paragraph harus menjorok ke dalam sekitar 1 cm. Tidak dsarankan menggunakan mesin penerjemah melainkan tulis ulang.
+ Crowd density monitoring in the Malioboro tourist area, which accommodates 
+ millions of visitors each year, still relies on manual observation of CCTV 
+ footage, while standard detection datasets such as COCO do not cover 
+ vehicles unique to the area, such as \textit{andong}, \textit{becak}, and 
+ \textit{bajaj}, leaving a gap that this study addresses by building a 
+ dedicated local dataset, selecting a suitable detection model, and 
+ deploying it within a working monitoring system. A dataset of 1,581 
+ annotated images covering nine object classes was constructed from footage 
+ of 22 public CCTV cameras using semi-automatic annotation assisted by a 
+ pretrained model with manual correction, after which eight variants of 
+ YOLOv8 and YOLO11 were trained and evaluated on a held-out test set using 
+ mAP50, mAP50-95, and F1-score, with the best variant further optimized 
+ through input resolution tuning before being integrated into a web-based 
+ system that processes live CCTV streams and issues density alerts based 
+ on the pedestrian level of service concept. The resulting dataset 
+ exhibited a severe class imbalance, with a 237-to-1 ratio between the 
+ most and least frequent classes. Among the eight variants, yolov8l 
+ achieved the highest mAP50 and mean F1 (0.6175 and 0.6222), while yolo11l 
+ achieved the highest mAP50-95 (0.4012) at a model size 42\% smaller, 
+ leading to its selection despite not leading on every metric. Tuning its 
+ input resolution from 640 to 960 pixels then raised its mean F1 from 
+ 0.5962 to 0.6739, surpassing every variant at the base resolution. On the 
+ GTX 1650 deployment device, the selected model also ran faster than 
+ yolov8l (9.73 versus 8.80 frames per second), and the implemented system 
+ correctly displayed live detection, density charts, and alert history 
+ during testing. These findings indicate that a deliberately balanced 
+ choice of architecture, model size, and resolution tuning, rather than 
+ the single highest-scoring variant, yields a detection model that is well 
+ suited for real-time deployment on resource-constrained hardware, although 
+ the underlying class imbalance continues to limit detection performance 
+ on minority classes such as bicycles and \textit{bajaj}.
 }
 
-\noindent\textbf{Keywords} : Keyword 1, Keyword 2, Keyword 3, Keyword 4, Keyword 5
+\noindent\textbf{Keywords} : object detection, YOLO, visitor density, class imbalance, Malioboro
