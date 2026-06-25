@@ -7,7 +7,7 @@ menjawab tujuan kedua melalui perbandingan delapan varian model, analisis kurva 
 dan analisis performa per kelas. Subbab \ref{sec:hasil_penyetelan} dan 
 \ref{sec:hasil_penyetelan_perkelas} melaporkan hasil optimasi model terpilih melalui 
 penyetelan resolusi. Subbab \ref{sec:hasil_sistem} menjawab tujuan ketiga melalui hasil 
-implementasi dan pengujian sistem pemantauan, dan Subbab \ref{sec:diskusi_temuan} menutup 
+implementasi dan pengujian sistem pemantauan, dan subbab \ref{sec:diskusi_temuan} menutup 
 bab ini dengan sintesis temuan lintas subbab.
 
 \section{Hasil Pembentukan Dataset}
@@ -33,8 +33,8 @@ orang dengan 10.694 \textit{instance} dibanding kelas truk yang hanya 45 \textit
 yaitu rasio sekitar 237 berbanding 1. Karakter kedua adalah dominasi objek berukuran kecil, 
 yang tampak pada panel sebaran lebar dan tinggi kotak di Gambar \ref{fig:labels}, dengan 
 mayoritas kotak terpusat pada tinggi sekitar 0,1 dari tinggi citra. Kedua karakter ini 
-menjadi tantangan utama yang tecermin pada hasil per kelas pada Subbab 
-\ref{sec:hasil_perkelas}, dan menjadi dasar strategi penyetelan resolusi pada Subbab 
+menjadi tantangan utama yang tecermin pada hasil per kelas pada subbab 
+\ref{sec:hasil_perkelas}, dan menjadi dasar strategi penyetelan resolusi pada subbab 
 \ref{sec:hasil_penyetelan}.
 
 \section{Hasil Pelatihan dan Perbandingan Delapan Varian}
@@ -42,19 +42,19 @@ menjadi tantangan utama yang tecermin pada hasil per kelas pada Subbab
 
 Delapan varian model, yaitu YOLOv8 dan YOLO11 pada empat ukuran (\textit{nano}, 
 \textit{small}, \textit{medium}, \textit{large}), dilatih dengan konfigurasi identik 
-sebagaimana diuraikan pada Subbab \ref{sec:pelatihan}, lalu dievaluasi pada himpunan uji 
+sebagaimana diuraikan pada subbab \ref{sec:pelatihan}, lalu dievaluasi pada himpunan uji 
 yang tidak pernah dilihat selama pelatihan. Perbandingan kedelapan varian ini menjadi 
 langkah pertama untuk menjawab tujuan kedua penelitian, yaitu menentukan model deteksi yang 
 paling sesuai untuk diterapkan pada sistem pemantauan. Subbab ini membandingkan performa 
 akurasi dan efisiensi kedelapan varian secara berurutan, sebelum keduanya disandingkan 
-sebagai dasar pemilihan model pada Subbab \ref{sec:pemilihan_model}.
+sebagai dasar pemilihan model pada subbab \ref{sec:pemilihan_model}.
 
 \subsection{Perbandingan Akurasi}
 \label{sec:perbandingan_akurasi}
 
 Tabel \ref{tab:banding_akurasi} merangkum performa akurasi kedelapan varian pada himpunan 
 uji, diurutkan menurun berdasarkan mAP50-95 sebagai metrik lokalisasi yang paling ketat. 
-Seluruh nilai pada tabel ini dihitung pada himpunan uji agar perbandingan antar varian 
+Seluruh nilai pada tabel ini dihitung pada himpunan uji agar perbandingan antarvarian 
 mencerminkan kemampuan generalisasi yang sesungguhnya, sedangkan himpunan validasi hanya 
 digunakan selama pelatihan untuk \textit{early stopping} dan tidak dipakai sebagai dasar 
 perbandingan akhir. Susunan tabel dari mAP50-95 tertinggi ke terendah dipilih karena metrik 
@@ -95,8 +95,8 @@ pertimbangan efisiensi turut menentukan pemilihan akhir.
 Tabel \ref{tab:banding_efisiensi} merangkum sisi efisiensi tiap varian, mencakup jumlah 
 epoch hingga konvergen, waktu pelatihan, ukuran model, serta kecepatan inferensi. Kecepatan 
 pada tabel ini diukur pada GPU Tesla V100-SXM2 di lingkungan pelatihan, sehingga mewakili 
-perbandingan relatif antar varian, bukan kecepatan pada perangkat penerapan yang dibahas 
-pada Subbab \ref{sec:hasil_sistem}. Jumlah epoch bervariasi karena \textit{early stopping} 
+perbandingan relatif antarvarian, bukan kecepatan pada perangkat penerapan yang dibahas 
+pada subbab \ref{sec:hasil_sistem}. Jumlah epoch bervariasi karena \textit{early stopping} 
 menghentikan pelatihan saat performa validasi berhenti membaik.
 
 \begin{table}[htbp]
@@ -157,13 +157,13 @@ lebih ringkas, sehingga menyisakan ruang memori yang lebih lega untuk pemrosesan
 \textit{stream} dan beban sistem lainnya pada laptop dengan GPU GTX 1650 bermemori 4 GB.
 
 Pertimbangan ketiga muncul dari pengujian kecepatan inferensi pada perangkat penerapan 
-sesungguhnya, yang justru membalikkan urutan pada GPU V100. Pada Subbab 
+sesungguhnya, yang justru membalikkan urutan pada GPU V100. Pada subbab 
 \ref{sec:kecepatan_gtx} ditunjukkan bahwa pada GTX 1650, yolo11l mencapai 9,73 FPS, lebih 
 cepat dibanding yolov8l yang hanya 8,80 FPS, berkebalikan dengan hasil pada GPU V100 saat 
 yolov8l lebih cepat. Atas dasar ketiga pertimbangan ini, yaitu lokalisasi yang lebih presisi, 
 ukuran yang lebih ringkas, dan kecepatan yang ternyata lebih unggul pada perangkat target, 
 yolo11l dipilih sebagai model yang diterapkan pada sistem. Pilihan ini kemudian diperkuat 
-oleh hasil penyetelan pada Subbab \ref{sec:hasil_penyetelan}, yang menunjukkan rerata F1 
+oleh hasil penyetelan pada subbab \ref{sec:hasil_penyetelan}, yang menunjukkan rerata F1 
 yolo11l naik menjadi 0,6739 setelah optimasi resolusi, melampaui capaian seluruh varian pada 
 resolusi dasar termasuk yolov8l.
 
@@ -179,7 +179,7 @@ model pada berbagai ambang keyakinan serta menentukan titik operasi yang dipakai
 sistem. Hasil akhir model, yaitu performa pada data yang sama sekali tidak dilihat selama 
 pelatihan, tetap diukur tersendiri pada himpunan uji dan disajikan melalui 
 \textit{confusion matrix} ternormalisasi pada Gambar \ref{fig:confusion_matrix} serta 
-metrik per kelas pada Subbab \ref{sec:hasil_perkelas}.
+metrik per kelas pada subbab \ref{sec:hasil_perkelas}.
 
 \begin{figure}[htbp]
     \centering
@@ -195,7 +195,7 @@ menandakan model mengenali kelas tersebut dengan keyakinan yang konsisten. Sebal
 kelas seperti sepeda menunjukkan kurva yang jatuh tajam segera setelah \textit{recall} 
 kecil, menandakan model hanya mampu mengenali sebagian kecil objek sepeda sebelum 
 \textit{precision}-nya merosot. Pola ini sejalan dengan hasil pada himpunan uji yang dibahas 
-pada Subbab \ref{sec:hasil_perkelas}, meski kedua himpunan berbeda.
+pada subbab \ref{sec:hasil_perkelas}, meski kedua himpunan berbeda.
 
 \begin{figure}[htbp]
     \centering
@@ -228,7 +228,7 @@ dan becak menegaskan deteksi yang andal pada kelas-kelas tersebut. Sebaliknya, b
 sepeda dan motor menunjukkan proporsi besar yang jatuh ke kolom \textit{background}, berarti 
 kesalahan dominan pada kedua kelas ini adalah objek yang gagal terdeteksi, bukan tertukar 
 ke kelas lain. Pengamatan ini konsisten dengan pola \textit{recall} rendah yang dibahas 
-lebih rinci pada Subbab \ref{sec:hasil_perkelas}.
+lebih rinci pada subbab \ref{sec:hasil_perkelas}.
 
 \section{Analisis Performa per Kelas dan Pengaruh Ketidakseimbangan}
 \label{sec:hasil_perkelas}
@@ -270,7 +270,7 @@ ketidakseimbangan dapat ditelaah.
 \end{table}
 
 Pola yang paling menonjol adalah rendahnya \textit{recall} pada banyak kelas, sejalan dengan 
-pengamatan pada \textit{confusion matrix} di Subbab \ref{sec:analisis_kurva}. Kelas motor, 
+pengamatan pada \textit{confusion matrix} di subbab \ref{sec:analisis_kurva}. Kelas motor, 
 misalnya, memiliki \textit{precision} 0,886 tetapi \textit{recall} hanya 0,415, dan kelas 
 orang memiliki \textit{recall} 0,536 yang berarti hampir separuh objek orang tidak 
 terdeteksi. Pola ini menandakan kesalahan dominan model adalah objek yang terlewat, bukan 
@@ -293,13 +293,13 @@ ketidakseimbangan kelas adalah faktor yang berpengaruh, tetapi efeknya dimediasi
 objek dan tingkat kemiripannya dengan kelas lain. Temuan inilah yang mendasari strategi 
 penyetelan melalui peningkatan resolusi masukan, yang dibahas pada subbab berikutnya.
 
-\section{Hasil Penyetelan Hyperparameter Model Terpilih}
+\section{Hasil Penyetelan Resolusi Masukan Model Terpilih}
 \label{sec:hasil_penyetelan}
 
 Model terpilih yolo11l dioptimasi lebih lanjut melalui penyetelan resolusi citra masukan 
-dari 640 menjadi 960 piksel, dengan dasar dan strategi sebagaimana diuraikan pada Subbab 
+dari 640 menjadi 960 piksel, dengan dasar dan strategi sebagaimana diuraikan pada subbab 
 \ref{sec:penyetelan}. Penyetelan ini diarahkan secara khusus pada kelemahan yang telah 
-teridentifikasi pada Subbab \ref{sec:hasil_perkelas}, yaitu \textit{recall} rendah pada 
+teridentifikasi pada subbab \ref{sec:hasil_perkelas}, yaitu \textit{recall} rendah pada 
 objek berukuran kecil, sehingga hasil yang dipaparkan pada subbab ini sekaligus menjadi 
 pengujian terhadap hipotesis tersebut. Model hasil penyetelan berhenti pada epoch ke-79 
 akibat \textit{early stopping}, sebanding dengan model awal yang berhenti pada epoch ke-74, 
@@ -332,7 +332,7 @@ menyeluruh, bukan sekadar menggeser titik seimbang antara \textit{precision} dan
 \end{table}
 
 Nilai mAP50-95 naik 0,0401 atau sekitar empat poin persentase, peningkatan yang besar untuk 
-satu perubahan \textit{hyperparameter} tunggal. Kenaikan terbesar terjadi pada 
+satu perubahan konfigurasi tunggal. Kenaikan terbesar terjadi pada 
 \textit{recall}, yaitu 0,0779, sesuai hipotesis bahwa resolusi lebih tinggi membuat lebih 
 banyak objek kecil berhasil terdeteksi alih-alih terlewat, sebagaimana terlihat dari 
 banyaknya kasus FN pada Tabel \ref{tab:perkelas}. Kenaikan \textit{precision} yang menyertai 
@@ -347,18 +347,18 @@ bersifat sekali jalan dan tidak menjadi beban berulang saat sistem dioperasikan.
 V100, kecepatan inferensi turun dari 23,10 ms (43,3 FPS) pada resolusi 640 menjadi 25,46 ms 
 (39,3 FPS) pada resolusi 960, penurunan yang tergolong kecil mengingat kenaikan resolusi 
 masukannya, dan masih jauh di atas kebutuhan \textit{real-time}. Kecepatan pada perangkat 
-penerapan yang sebenarnya dibahas pada Subbab \ref{sec:hasil_sistem}.
+penerapan yang sebenarnya dibahas pada subbab \ref{sec:hasil_sistem}.
 
 \section{Analisis Performa per Kelas Setelah Penyetelan}
 \label{sec:hasil_penyetelan_perkelas}
 
-Kenaikan metrik keseluruhan pada Subbab \ref{sec:hasil_penyetelan} belum menjelaskan kelas 
+Kenaikan metrik keseluruhan pada subbab \ref{sec:hasil_penyetelan} belum menjelaskan kelas 
 mana yang paling berkontribusi terhadap perbaikan tersebut, sehingga diperlukan analisis 
 yang lebih terperinci pada tingkat kelas. Tabel \ref{tab:f1_penyetelan} merinci perbandingan 
 F1 per kelas antara resolusi 640 dan 960, disusun untuk menelaah kelas mana yang paling 
 diuntungkan oleh penyetelan resolusi dan kelas mana yang relatif tidak terpengaruh. 
 Perbandingan pada tingkat kelas ini juga berfungsi memverifikasi apakah penyetelan benar-
-benar menyasar kelemahan yang telah teridentifikasi pada Subbab \ref{sec:hasil_perkelas}, 
+benar menyasar kelemahan yang telah teridentifikasi pada subbab \ref{sec:hasil_perkelas}, 
 yaitu kelas berukuran kecil dengan \textit{recall} rendah.
 
 \begin{table}[htbp]
@@ -396,14 +396,14 @@ tipis, masing-masing 0,014 dan 0,006 poin. Penurunan yang sangat kecil ini konsi
 dasar teoretis bahwa kenaikan resolusi terutama membantu objek kecil dan nyaris tidak 
 berpengaruh, atau berpotensi sedikit merugikan, pada objek yang sudah berukuran besar dan 
 jelas. Pola menyeluruh ini menunjukkan penyetelan resolusi berhasil menyasar tepat 
-kelemahan yang teridentifikasi pada Subbab \ref{sec:hasil_perkelas}, yaitu objek kecil yang 
+kelemahan yang teridentifikasi pada subbab \ref{sec:hasil_perkelas}, yaitu objek kecil yang 
 sebelumnya banyak terlewat, tanpa mengorbankan performa pada kelas yang sudah baik.
 
 \section{Hasil Implementasi dan Pengujian Sistem}
 \label{sec:hasil_sistem}
 
 Model terpilih yolo11l diterapkan pada sistem pemantauan berbasis web yang dirancang pada 
-Subbab \ref{sec:sistem}, sebagai wujud capaian tujuan ketiga penelitian ini. Sistem tersebut 
+subbab \ref{sec:sistem}, sebagai wujud capaian tujuan ketiga penelitian ini. Sistem tersebut 
 diuji untuk memastikan dua hal, yaitu apakah kecepatan inferensinya memadai pada perangkat 
 penerapan yang sesungguhnya, dan apakah seluruh komponen antarmuka berfungsi sebagaimana 
 dirancang pada Bab III. Subbab ini melaporkan hasil kedua pengujian tersebut secara 
@@ -418,7 +418,7 @@ Model terpilih yolo11l, beserta tujuh varian pembanding dan satu varian hasil pe
 diuji kecepatan inferensinya pada perangkat penerapan yang sebenarnya, yaitu laptop dengan 
 GPU NVIDIA GeForce GTX 1650 bermemori 4 GB sebagaimana dirinci pada Tabel 
 \ref{tab:perangkat_lunak}. Pengujian ini penting karena kecepatan pada Tabel 
-\ref{tab:banding_efisiensi} dan Subbab \ref{sec:hasil_penyetelan} diukur pada GPU Tesla 
+\ref{tab:banding_efisiensi} dan subbab \ref{sec:hasil_penyetelan} diukur pada GPU Tesla 
 V100 di lingkungan pelatihan, yang jauh lebih bertenaga dan tidak mewakili kondisi penerapan 
 sesungguhnya. Setiap model diukur dengan merata-ratakan seratus kali inferensi berturut-turut 
 saat sistem berjalan, sehingga angka yang dilaporkan mencerminkan kondisi pemakaian nyata, 
@@ -462,7 +462,7 @@ kapasitas pemrosesan dan lebar pita memori yang jauh lebih terbatas, sehingga ju
 parameter yang harus dipindahkan dan diproses pada tiap inferensi menjadi faktor pembatas 
 yang lebih dominan, dan pada kondisi ini ukuran yolo11l yang lebih ringkas (51,20 MB 
 dibanding 87,65 MB) memberi keuntungan nyata. Temuan ini memperkuat keputusan pemilihan 
-model pada Subbab \ref{sec:pemilihan_model}, karena pertimbangan ukuran yang semula 
+model pada subbab \ref{sec:pemilihan_model}, karena pertimbangan ukuran yang semula 
 didasarkan pada keterbatasan memori kini terbukti juga relevan untuk kecepatan pada 
 perangkat target, bukan sekadar pertimbangan keamanan memori semata.
 
@@ -479,7 +479,7 @@ sebagai estimasi tipikal dan bukan jaminan kecepatan yang tetap pada setiap saat
 \subsection{Hasil Antarmuka Pemantauan}
 \label{sec:hasil_antarmuka}
 
-Antarmuka sistem yang dirancang pada Subbab \ref{sec:sistem} diuji secara fungsional untuk 
+Antarmuka sistem yang dirancang pada subbab \ref{sec:sistem} diuji secara fungsional untuk 
 memastikan tiap komponen, mulai dari tampilan deteksi langsung hingga visualisasi kepadatan, 
 berjalan sebagaimana mestinya saat sistem dijalankan pada kondisi nyata. Pengujian dilakukan 
 dengan menjalankan sistem secara langsung pada kamera CCTV aktif dan mengamati keluaran yang 
@@ -495,30 +495,31 @@ ditampilkan pada antarmuka pengguna. Gambar \ref{fig:dasbor} menunjukkan tampila
 
 Gambar \ref{fig:dasbor} memperlihatkan kotak deteksi tergambar di atas \textit{stream} 
 video langsung, masing-masing diberi label kelas dan nilai keyakinan, sesuai rancangan pada 
-Subbab \ref{sec:sistem}. Panel ringkasan di bagian bawah menunjukkan jumlah deteksi tiap 
+subbab \ref{sec:sistem}. Panel ringkasan di bagian bawah menunjukkan jumlah deteksi tiap 
 kelas pada \textit{frame} saat itu, yaitu sembilan orang dan dua mobil, yang sesuai dengan 
 jumlah kotak yang tergambar pada citra. Panel peringatan kamera di sisi kiri menampilkan 
 satu notifikasi aktif berstatus padat dengan keterangan "orang=9 melebihi ambang 5", yang 
-menunjukkan mekanisme notifikasi yang dirancang pada Subbab \ref{sec:sistem} berhasil 
+menunjukkan mekanisme notifikasi yang dirancang pada subbab \ref{sec:sistem} berhasil 
 terpicu sesuai kondisi kepadatan yang terdeteksi.
 
 Nilai ambang 5 pada notifikasi tersebut sengaja diturunkan dari ambang sesungguhnya untuk 
-keperluan pengujian, bukan nilai yang dipakai pada operasional sebenarnya. Ambang 
-sesungguhnya dihitung dari luas area pejalan kaki yang telah diukur pada Subbab 
-\ref{sec:sistem}, yaitu 169~m\textsuperscript{2} untuk kamera seberang Gedung Agung dan 
-149~m\textsuperscript{2} untuk kamera Titik Nol, dibagi luas minimum 1,4 
+keperluan pengujian logika notifikasi pada tahap ini, bukan nilai yang dipakai pada 
+operasional sebenarnya. Ambang sesungguhnya dihitung dari luas area pejalan kaki yang telah 
+diukur pada subbab \ref{sec:sistem}, yaitu 169~m\textsuperscript{2} untuk kamera seberang 
+Gedung Agung dan 149~m\textsuperscript{2} untuk kamera Titik Nol, dibagi luas minimum 1,4 
 m\textsuperscript{2} per orang pada Standar D. Pembagian ini menghasilkan ambang sekitar 
-120 orang untuk kamera seberang Gedung Agung dan 106 orang untuk kamera Titik Nol, dan 
-menunggu kepadatan sungguhan mencapai angka tersebut secara alami tidak praktis untuk 
-keperluan pengujian fungsional pada penelitian ini. Nilai 5 dipilih sebagai pengganti 
-sementara agar notifikasi dapat dipicu dan diverifikasi dalam waktu pengujian yang wajar, 
-sedangkan ambang berbasis Standar D yang sesungguhnya, yaitu 120 dan 106 orang, tetap 
-menjadi nilai yang diterapkan pada konfigurasi akhir sistem.
+120 orang untuk kamera seberang Gedung Agung dan 106 orang untuk kamera Titik Nol. Pada 
+tahap pengujian antarmuka ini, ambang 5 dipilih sebagai pengganti sementara agar logika 
+notifikasi dapat dipicu dan diverifikasi secara cepat tanpa bergantung pada kondisi 
+keramaian tertentu, sedangkan ambang berbasis Standar D yang sesungguhnya, yaitu 120 dan 
+106 orang, tetap menjadi nilai yang diterapkan pada konfigurasi akhir sistem. Pengujian 
+notifikasi pada ambang sesungguhnya tersebut dibahas tersendiri pada subbab 
+\ref{sec:hasil_beban_tinggi}.
 
 \subsection{Hasil Grafik Kepadatan dan Riwayat Peringatan}
 \label{sec:hasil_grafik_riwayat}
 
-Grafik kepadatan dan mekanisme riwayat peringatan yang dirancang pada Subbab 
+Grafik kepadatan dan mekanisme riwayat peringatan yang dirancang pada subbab 
 \ref{sec:sistem} diuji untuk memastikan keduanya mencerminkan kondisi kepadatan secara 
 akurat dan dapat ditelusuri ulang oleh operator. Pengujian dilakukan dengan mengamati 
 kedua komponen tersebut saat sistem berjalan dan menerima deteksi dari kamera secara 
@@ -532,7 +533,7 @@ untuk kamera Selatan Teteg pada tanggal pengujian.
     \label{fig:grafik_kepadatan}
 \end{figure}
 
-Gambar \ref{fig:grafik_kepadatan} memperlihatkan dua garis sesuai rancangan pada Subbab 
+Gambar \ref{fig:grafik_kepadatan} memperlihatkan dua garis sesuai rancangan pada subbab 
 \ref{sec:sistem}, yaitu rata-rata dan puncak jumlah orang per jam dalam zona waktu WIB. 
 Kedua garis menunjukkan pola kepadatan rendah pada dini hari sebelum pukul 04.00 WIB, lalu 
 naik tajam menjelang pagi, sesuai dengan karakter kawasan wisata yang ramai pada jam-jam 
@@ -542,7 +543,7 @@ kenaikan yang mulai terlihat pada grafik di jam tersebut.
 
 Riwayat peringatan diuji dengan membuka halaman riwayat dan memeriksa detail salah satu 
 peringatan yang tersimpan, sebagaimana ditunjukkan pada Gambar \ref{fig:riwayat_peringatan}. 
-Pengujian ini memverifikasi bahwa fitur yang dirancang pada Subbab \ref{sec:sistem}, yaitu 
+Pengujian ini memverifikasi bahwa fitur yang dirancang pada subbab \ref{sec:sistem}, yaitu 
 penyimpanan bukti citra dan kotak deteksi setiap kali peringatan terpicu, benar-benar 
 tersimpan dan dapat ditelusuri kembali oleh operator. Detail yang ditampilkan mencakup 
 kamera asal, waktu dalam WIB, jenis peringatan, nilai pemicu, dan deskripsi singkat, 
@@ -557,38 +558,121 @@ seluruhnya konsisten dengan data yang tercatat pada panel peringatan kamera di G
 \end{figure}
 
 Citra pada Gambar \ref{fig:riwayat_peringatan} menunjukkan kotak deteksi tergambar tepat di 
-atas citra mentah yang tersimpan, sesuai rancangan pada Subbab \ref{sec:sistem} bahwa citra 
+atas citra mentah yang tersimpan, sesuai rancangan pada subbab \ref{sec:sistem} bahwa citra 
 disimpan tanpa anotasi dan kotak deteksi digambar ulang dari data koordinat saat ditampilkan. 
 Keberhasilan rekonstruksi kotak deteksi ini pada halaman riwayat membuktikan bahwa 
 pendekatan penyimpanan hemat tersebut tidak mengorbankan kelengkapan bukti visual yang dapat 
-ditinjau ulang oleh operator. Dengan demikian, ketiga pengujian pada subbab ini, yaitu 
-antarmuka deteksi langsung, grafik kepadatan, dan riwayat peringatan, menunjukkan sistem 
-berfungsi sesuai rancangan dan berhasil mewujudkan tujuan ketiga penelitian.
+ditinjau ulang oleh operator. Dengan demikian, ketiga pengujian fungsional pada subbab ini, 
+yaitu antarmuka deteksi langsung, grafik kepadatan, dan riwayat peringatan, menunjukkan 
+seluruh komponen sistem berfungsi sesuai rancangan pada kondisi kepadatan biasa. Pengujian 
+berikutnya menelaah perilaku sistem pada kondisi kepadatan tinggi yang menjadi sasaran utama 
+sistem.
+
+\subsection{Pengujian Notifikasi pada Beban Kepadatan Tinggi}
+\label{sec:hasil_beban_tinggi}
+
+Pengujian fungsional pada subbab \ref{sec:hasil_sistem} memverifikasi logika notifikasi 
+menggunakan ambang yang diturunkan, sedangkan pengujian pada subbab ini bertujuan menelaah 
+perilaku sistem ketika kepadatan sungguhan mencapai ambang berbasis Standar D yang 
+sesungguhnya, yaitu kondisi beban tinggi yang menjadi sasaran utama sistem. Pengujian 
+dilakukan dengan menjalankan sistem secara langsung pada \textit{stream} kamera Titik Nol 
+pada malam hari, saat kepadatan pejalan kaki di kawasan tersebut meningkat secara alami 
+hingga melampaui ambang 106 orang yang dihitung pada subbab \ref{sec:hasil_sistem}. Kondisi 
+ini memungkinkan pengujian dilakukan pada ambang operasional yang sebenarnya, bukan ambang 
+pengganti yang diturunkan.
+
+Gambar \ref{fig:beban_dasbor} menunjukkan tampilan \textit{dashboard} saat kepadatan 
+mencapai kondisi tersebut. Panel ringkasan mencatat 109 orang dan satu motor pada 
+\textit{frame} saat itu, dan panel peringatan kamera menampilkan notifikasi berstatus padat 
+dengan keterangan jumlah orang melebihi ambang 106. Notifikasi terpicu secara otomatis tanpa 
+penurunan ambang, yang menunjukkan mekanisme deteksi kepadatan bekerja sebagaimana dirancang 
+pada kondisi beban yang menjadi target operasional sistem.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{contents/chapter-4/dasbor_beban_tinggi_titik_nol.png}
+    \caption{Tampilan \textit{dashboard} saat kepadatan kamera Titik Nol mencapai 109 orang, dengan notifikasi padat terpicu pada ambang sesungguhnya 106 orang.}
+    \label{fig:beban_dasbor}
+\end{figure}
+
+Detail peringatan yang tersimpan ditunjukkan pada Gambar \ref{fig:beban_detail}. Peringatan 
+tercatat berasal dari kamera Titik Nol pada pukul 20.46 WIB dengan jenis padat, nilai pemicu 
+108 orang, dan deskripsi jumlah orang melebihi ambang 106. Citra yang tersimpan 
+memperlihatkan kepadatan pejalan kaki yang tinggi dengan kotak deteksi tergambar pada 
+sebagian besar area \textit{frame}. Selisih kecil antara jumlah pada panel \textit{dashboard} 
+saat itu dan nilai pemicu yang tersimpan, yaitu 109 berbanding 108, terjadi karena keduanya 
+diambil dari \textit{frame} yang berbeda dalam selang waktu yang sangat berdekatan, sehingga 
+wajar pada \textit{stream} langsung yang jumlah deteksinya berubah tiap \textit{frame}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{contents/chapter-4/detail_peringatan_beban_tinggi_titik_nol.png}
+    \caption{Detail peringatan beban tinggi kamera Titik Nol beserta citra CCTV dan kotak deteksinya.}
+    \label{fig:beban_detail}
+\end{figure}
+
+Peringatan ini juga tercatat pada halaman riwayat, sebagaimana ditunjukkan pada Gambar 
+\ref{fig:beban_riwayat}, sehingga kejadian beban tinggi tetap dapat ditelusuri ulang oleh 
+operator setelah kondisi berlalu. Hal ini menunjukkan jalur penyimpanan riwayat tetap 
+berfungsi pada kondisi kepadatan tinggi, sama seperti pada kondisi kepadatan rendah yang 
+diuji pada subbab \ref{sec:hasil_grafik_riwayat}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{contents/chapter-4/riwayat_peringatan_beban_tinggi.png}
+    \caption{Halaman riwayat peringatan yang memuat kejadian beban tinggi kamera Titik Nol pada ambang sesungguhnya.}
+    \label{fig:beban_riwayat}
+\end{figure}
+
+Pengujian ini menegaskan dua hal. Pertama, dari sisi rekayasa perangkat lunak, \textit{backend} 
+dan jalur notifikasi tetap berjalan stabil saat memproses \textit{frame} dengan lebih dari 
+seratus objek terdeteksi, tanpa kegagalan pengiriman notifikasi maupun gangguan pada 
+penyimpanan riwayat. Hal ini sejalan dengan karakteristik deteksi objek satu tahap seperti 
+YOLO, yang melakukan satu kali inferensi per \textit{frame} terlepas dari jumlah objek yang 
+akhirnya terdeteksi, sehingga beban komputasi inti tidak meningkat seiring bertambahnya 
+jumlah objek pada \textit{frame}. Kedua, dari sisi fungsi sistem, notifikasi kepadatan 
+terbukti dapat terpicu pada ambang operasional yang sesungguhnya dan bukan hanya pada ambang 
+yang diturunkan, sehingga validitas mekanisme notifikasi pada beban tinggi tidak lagi 
+bertumpu pada pengujian dengan ambang pengganti semata.
+
+Pengujian beban tinggi ini memiliki keterbatasan yang perlu diakui secara jujur. Pada 
+kepadatan setinggi itu, akurasi jumlah deteksi tidak dapat diverifikasi satu per satu secara 
+manual, karena kotak deteksi dan label kelas saling menutupi sebagian besar area \textit{frame} 
+sehingga sulit memastikan tidak ada objek yang terhitung ganda maupun terlewat. Jumlah yang 
+ditampilkan tampak wajar secara visual untuk kepadatan sepadat itu, tetapi penelitian ini 
+tidak mengklaim ketepatan hitungan yang presisi pada kondisi ekstrem tersebut. Selain itu, 
+pengujian baru tercapai pada satu kamera, yaitu Titik Nol, karena kepadatan yang melampaui 
+ambang sesungguhnya bergantung pada kondisi keramaian nyata di lapangan yang tidak dapat 
+diatur waktunya. Verifikasi akurasi penghitungan pada kepadatan tinggi diajukan sebagai arah 
+pengembangan lanjutan pada Bab V. Dengan rangkaian pengujian fungsional dan pengujian beban 
+tinggi ini, sistem terbukti berjalan sesuai rancangan baik pada kondisi kepadatan biasa 
+maupun pada ambang operasional yang sesungguhnya, sehingga tujuan ketiga penelitian berhasil 
+diwujudkan.
 
 \section{Sintesis Temuan}
 \label{sec:diskusi_temuan}
 
 Bagian-bagian sebelumnya pada bab ini telah memaparkan hasil secara berurutan mengikuti 
 tujuan penelitian, mulai dari pembentukan dataset, perbandingan model, penyetelan, hingga 
-implementasi sistem. Subbab ini merangkum keterkaitan antar hasil tersebut, untuk menegaskan 
+implementasi sistem. Subbab ini merangkum keterkaitan antarhasil tersebut, untuk menegaskan 
 bagaimana temuan-temuan yang tampak berdiri sendiri pada tiap subbab sesungguhnya saling 
 menguatkan satu sama lain. Tiga keterkaitan utama dibahas secara berurutan, yaitu hubungan 
 antara pemilihan model dan hasil penyetelan, hubungan antara analisis per kelas sebelum dan 
 setelah penyetelan, serta posisi ketidakseimbangan kelas sebagai salah satu faktor yang 
 memengaruhi performa, bukan satu-satunya faktor.
 
-Pemilihan yolo11l pada Subbab \ref{sec:pemilihan_model} pada awalnya tidak unggul telak 
+Pemilihan yolo11l pada subbab \ref{sec:pemilihan_model} pada awalnya tidak unggul telak 
 dibanding yolov8l, dengan selisih akurasi yang tipis pada metrik longgar. Keputusan ini 
-terbukti tepat setelah penyetelan resolusi pada Subbab \ref{sec:hasil_penyetelan}, yang 
+terbukti tepat setelah penyetelan resolusi pada subbab \ref{sec:hasil_penyetelan}, yang 
 mendorong rerata F1 yolo11l dari 0,5962 menjadi 0,6739, melampaui rerata F1 yolov8l pada 
 resolusi dasar sebesar 0,6222. Dengan demikian, keunggulan akhir model terpilih bersumber 
-dari kombinasi pemilihan arsitektur yang tepat dan optimasi \textit{hyperparameter} yang 
+dari kombinasi pemilihan arsitektur yang tepat dan optimasi resolusi masukan yang 
 terarah, bukan dari salah satu faktor saja.
 
-Analisis per kelas pada Subbab \ref{sec:hasil_perkelas} dan \ref{sec:hasil_penyetelan_perkelas} 
+Analisis per kelas pada subbab \ref{sec:hasil_perkelas} dan \ref{sec:hasil_penyetelan_perkelas} 
 juga saling menguatkan. Kelemahan model awal pada kelas berukuran kecil seperti sepeda dan 
 bajaj, yang teridentifikasi dari \textit{recall} rendah dan diperkuat oleh \textit{confusion 
-matrix} pada Subbab \ref{sec:analisis_kurva}, ternyata paling diuntungkan oleh penyetelan 
+matrix} pada subbab \ref{sec:analisis_kurva}, ternyata paling diuntungkan oleh penyetelan 
 resolusi. Hubungan ini menunjukkan bahwa strategi penyetelan yang dipilih, yaitu menaikkan 
 resolusi masukan, secara tepat menyasar akar permasalahan yang teridentifikasi dari analisis 
 sebelumnya, bukan perbaikan yang kebetulan.
@@ -598,18 +682,22 @@ menemukan bahwa pengaruh tersebut tidak berdiri sendiri. Anomali truk yang berpe
 baik daripada sepeda meski memiliki \textit{instance} jauh lebih sedikit menunjukkan ukuran 
 objek dan kekhasan visual turut memoderasi pengaruh ketidakseimbangan jumlah data. Temuan 
 ini melengkapi pemahaman tentang ketidakseimbangan kelas pada deteksi objek multikelas yang 
-heterogen secara visual, sebagaimana dibahas pada Subbab \ref{sec:ketidakseimbangan}.
+heterogen secara visual, sebagaimana dibahas pada subbab \ref{sec:ketidakseimbangan}.
 
-Hasil implementasi pada Subbab \ref{sec:hasil_sistem} melengkapi rangkaian temuan ini 
+Hasil implementasi pada subbab \ref{sec:hasil_sistem} melengkapi rangkaian temuan ini 
 dengan menunjukkan bahwa pertimbangan ukuran model yang mendasari pemilihan yolo11l pada 
-Subbab \ref{sec:pemilihan_model} terbukti relevan di luar sekadar keamanan memori. 
+subbab \ref{sec:pemilihan_model} terbukti relevan di luar sekadar keamanan memori. 
 Pengujian kecepatan pada GTX 1650 menunjukkan yolo11l justru lebih cepat dibanding yolov8l 
 pada perangkat penerapan, berkebalikan dengan urutan pada GPU V100, sehingga keunggulan 
 ukuran yang ringkas memberi manfaat ganda berupa keamanan memori dan kecepatan yang lebih 
 baik pada kondisi perangkat terbatas. Pengujian fungsional pada antarmuka, grafik kepadatan, 
 dan riwayat peringatan turut menunjukkan bahwa rancangan sistem pada Bab III berhasil 
 diwujudkan secara nyata, dengan notifikasi yang terpicu sesuai ambang dan kotak deteksi yang 
-berhasil direkonstruksi dari data tersimpan. Secara keseluruhan, ketiga tujuan penelitian 
+berhasil direkonstruksi dari data tersimpan. Lebih jauh, pengujian pada beban kepadatan 
+tinggi di kamera Titik Nol pada subbab \ref{sec:hasil_beban_tinggi} menunjukkan notifikasi 
+tetap terpicu dengan benar dan \textit{backend} tetap stabil saat memproses lebih dari 
+seratus objek pada satu \textit{frame}, sehingga validitas sistem tidak lagi bertumpu pada 
+pengujian dengan ambang yang diturunkan semata. Secara keseluruhan, ketiga tujuan penelitian 
 ini saling terkait erat, yaitu dataset yang terbentuk pada tujuan pertama menjadi dasar 
 perbandingan model pada tujuan kedua, dan model yang terpilih serta dioptimasi pada tujuan 
 kedua terbukti layak diterapkan pada sistem yang menjawab tujuan ketiga, baik dari sisi 

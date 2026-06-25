@@ -26,7 +26,9 @@
  correctly displayed live detection, density charts, and alert history 
  during testing. These findings indicate that a deliberately balanced 
  choice of architecture, model size, and resolution tuning, rather than 
- the single highest-scoring variant, yields a detection model that is well 
+ the single highest-scoring variant, yields a detection model that achieves an 
+ mAP50-95 of 0.4413 and a mean F1-score of 0.6739 on the test set while running at 9.73 
+ frames per second on the deployment device, making it well 
  suited for real-time deployment on resource-constrained hardware, although 
  the underlying class imbalance continues to limit detection performance 
  on minority classes such as bicycles and \textit{bajaj}.

@@ -217,7 +217,7 @@
 }
 
 @inproceedings{zhao2024rtdetr,
-  author    = {Y. Zhao and W. Lv and S. Xu and J. Wei and Q. Dang and Y. Liu and J. Chen},
+  author    = {Y. Zhao and W. Lv and S. Xu and J. Wei and G. Wang and Q. Dang and Y. Liu and J. Chen},
   title     = {{DETRs} beat {YOLOs} on real-time object detection},
   booktitle = {Proc. IEEE/CVF Conf. Computer Vision and Pattern Recognition (CVPR)},
   pages     = {16965--16974},
@@ -250,24 +250,20 @@
   year    = {2021}
 }
 
-@misc{tenckhoff2025feedback,
-  author        = {S. Tenckhoff and M. Koddenbrock and E. Rodner},
-  title         = {Feedback-driven object detection and iterative model improvement for accurate annotations},
-  year          = {2025},
-  eprint        = {2411.19835},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CV},
-  howpublished  = {arXiv preprint arXiv:2411.19835}
+@inproceedings{tenckhoff2025feedback,
+  author    = {S. Tenckhoff and M. Koddenbrock and E. Rodner},
+  title     = {Feedback-driven object detection and iterative model improvement for accurate annotations},
+  booktitle = {GFaI Tagungsband 2024: AI4EA Workshop},
+  address   = {Berlin, Germany},
+  pages     = {96--101},
+  year      = {2025}
 }
 
-@misc{carion2025sam3,
-  author        = {N. Carion and L. Gustafson and Y.-T. Hu and others},
-  title         = {{SAM} 3: Segment anything with concepts},
-  year          = {2025},
-  eprint        = {2511.16719},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CV},
-  howpublished  = {arXiv preprint arXiv:2511.16719}
+@inproceedings{carion2025sam3,
+  author    = {N. Carion and L. Gustafson and Y.-T. Hu and others},
+  title     = {{SAM} 3: Segment anything with concepts},
+  booktitle = {Proc. International Conf. Learning Representations (ICLR)},
+  year      = {2026}
 }
 
 @article{luo2018miotcd,
@@ -283,34 +279,31 @@
 % Varian YOLO yang dibahas pada analisis pemilihan versi (Subbab 2.3.2)
 % ---------------------------------------------------------------------
 
-@misc{wang2024yolov9,
-  author        = {C.-Y. Wang and I.-H. Yeh and H.-Y. M. Liao},
-  title         = {{YOLOv9}: Learning what you want to learn using programmable gradient information},
-  year          = {2024},
-  eprint        = {2402.13616},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CV},
-  howpublished  = {arXiv preprint arXiv:2402.13616}
+@inproceedings{wang2024yolov9,
+  author    = {C.-Y. Wang and I.-H. Yeh and H.-Y. M. Liao},
+  title     = {{YOLOv9}: Learning what you want to learn using programmable gradient information},
+  booktitle = {Computer Vision -- ECCV 2024},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {15089},
+  publisher = {Springer},
+  address   = {Cham},
+  pages     = {1--21},
+  year      = {2024}
 }
 
-@misc{wang2024yolov10,
-  author        = {A. Wang and H. Chen and L. Liu and K. Chen and Z. Lin and J. Han and G. Ding},
-  title         = {{YOLOv10}: Real-time end-to-end object detection},
-  year          = {2024},
-  eprint        = {2405.14458},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CV},
-  howpublished  = {arXiv preprint arXiv:2405.14458}
+@inproceedings{wang2024yolov10,
+  author    = {A. Wang and H. Chen and L. Liu and K. Chen and Z. Lin and J. Han and G. Ding},
+  title     = {{YOLOv10}: Real-time end-to-end object detection},
+  booktitle = {Advances in Neural Information Processing Systems 37 (NeurIPS 2024)},
+  pages     = {107984--108011},
+  year      = {2024}
 }
 
-@misc{tian2025yolov12,
-  author        = {Y. Tian and Q. Ye and D. Doermann},
-  title         = {{YOLOv12}: Attention-centric real-time object detectors},
-  year          = {2025},
-  eprint        = {2502.12524},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CV},
-  howpublished  = {arXiv preprint arXiv:2502.12524}
+@inproceedings{tian2025yolov12,
+  author    = {Y. Tian and Q. Ye and D. Doermann},
+  title     = {{YOLOv12}: Attention-centric real-time object detectors},
+  booktitle = {Advances in Neural Information Processing Systems 38 (NeurIPS 2025)},
+  year      = {2025}
 }
 
 @misc{jocher2026yolo26,
@@ -345,4 +338,45 @@
   number  = {1},
   pages   = {xviii--xxxiv},
   year    = {1992}
+}
+
+% ---------------------------------------------------------------------
+% BAB II - Estimasi Kepadatan via Homografi Planar (2.2.6)
+% & justifikasi penolakan SAM3 pada pelabelan otomatis (3.3)
+% ---------------------------------------------------------------------
+
+@inproceedings{kirillov2023segment,
+  author    = {A. Kirillov and E. Mintun and N. Ravi and H. Mao and C. Rolland and L. Gustafson and T. Xiao and S. Whitehead and A. C. Berg and W.-Y. Lo and P. Doll{\'a}r and R. Girshick},
+  title     = {Segment anything},
+  booktitle = {Proc. IEEE/CVF Int. Conf. Computer Vision (ICCV)},
+  pages     = {4015--4026},
+  year      = {2023}
+}
+
+% Survei akademik (preprint) yang menelaah keterbatasan SAM pada struktur
+% halus dan objek kecil akibat ketergantungan pada global attention dan
+% dense prediction; dikutip untuk justifikasi penolakan SAM3.
+@misc{yu2025granular,
+  author        = {Q. Yu and Y. Fang and T. Li and X. Cao and Y. Chen and J. Li and F. Min and Y. Zhang},
+  title         = {Granular computing-driven {SAM}: From coarse-to-fine guidance for prompt-free segmentation},
+  year          = {2025},
+  eprint        = {2511.19062},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  howpublished  = {arXiv preprint arXiv:2511.19062}
+}
+
+% Jurnal (MDPI Sensors) yang menelaah strategi grid-point SAM tanpa
+% pemandu lokalisasi, penyebab "localization blindness" dan redundansi
+% komputasi pada mode segment-everything; dikutip untuk justifikasi
+% penolakan SAM3 pada pelabelan otomatis Subbab 3.3.
+@article{gao2026pmgsam,
+  author  = {J. Gao and X. Jiang and A. Wang and Y. Gao and Z. Fang and M. S. Lew},
+  title   = {{PMG-SAM}: Boosting auto-segmentation of {SAM} with pre-mask guidance},
+  journal = {Sensors},
+  volume  = {26},
+  number  = {2},
+  pages   = {365},
+  year    = {2026},
+  doi     = {10.3390/s26020365}
 }

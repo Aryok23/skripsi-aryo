@@ -25,8 +25,13 @@ Kota Yogyakarta Nomor 1 Tahun 2019 serta pengawasan langsung oleh petugas
 manual melalui kamera CCTV yang diamati operator. Pendekatan ini memiliki 
 keterbatasan yang melekat, yaitu cakupan pengamatan yang terbatas, kebutuhan daya yang 
 tinggi, dan ketergantungan pada pengawasan operator secara terus-menerus 
-\cite{khan2020crowd}. Akibatnya, informasi kepadatan yang objektif dan tersedia secara 
-langsung untuk banyak titik sekaligus sulit diperoleh.
+\cite{khan2020crowd}. Keterbatasan ini terasa makin berat pada periode puncak kunjungan, 
+ketika lonjakan pengunjung menuntut pengawasan terus-menerus oleh petugas dalam waktu lama, 
+sehingga beban kerja meningkat tajam justru pada saat informasi kepadatan paling dibutuhkan. 
+Akibatnya, informasi kepadatan yang objektif dan tersedia secara 
+langsung untuk banyak titik sekaligus sulit diperoleh, dan keputusan pengendalian kerumunan 
+cenderung bersifat reaktif terhadap kondisi yang sudah terjadi di lapangan, bukan didasarkan 
+pada data kuantitatif yang tersedia secara langsung.
 
 Sejumlah kota di dunia telah beralih ke sistem pemantauan berbasis kecerdasan buatan 
 untuk mengatasi keterbatasan tersebut. Kota Hangzhou di Tiongkok mengoperasikan sistem 
@@ -71,12 +76,14 @@ permasalahan dirumuskan pada subbab berikut.
 Berdasarkan latar belakang yang telah diuraikan, yaitu kebutuhan pemantauan kepadatan 
 otomatis di kawasan Malioboro yang masih dikelola secara manual, terdapat tiga persoalan 
 pokok yang saling berurutan, mulai dari ketersediaan data, pemilihan model deteksi, hingga 
-penerapannya pada sistem. Ketiga persoalan tersebut dirumuskan sebagai berikut.
+penerapannya pada sistem. Tiap persoalan diuraikan beserta dampak yang ditimbulkannya dan 
+alasan mengapa persoalan tersebut perlu segera diselesaikan. Ketiga persoalan tersebut 
+dirumuskan sebagai berikut.
 
 \begin{enumerate}
-    \item Dataset deteksi objek untuk sembilan kelas khas kawasan Malioboro, yaitu andong, bajaj, becak, sepeda, bus, mobil, motor, orang, dan truk, belum tersedia karena sebagian kelas tersebut tidak terdapat pada dataset publik berskala besar seperti COCO.
-    \item Varian model YOLOv8 dan YOLO11 yang memberikan performa deteksi terbaik untuk kesembilan kelas tersebut belum diketahui, termasuk pengaruh ketidakseimbangan jumlah \textit{instance} antar kelas terhadap performa deteksi pada tiap kelas.
-    \item Model deteksi terbaik belum diimplementasikan ke dalam sistem pemantauan kepadatan berbasis web yang memproses \textit{stream} video kamera CCTV secara \textit{real-time}.
+    \item Dataset deteksi objek untuk sembilan kelas khas kawasan Malioboro, yaitu andong, bajaj, becak, sepeda, bus, mobil, motor, orang, dan truk, belum tersedia karena sebagian kelas tersebut tidak terdapat pada dataset publik berskala besar seperti COCO. Tanpa dataset lokal, model siap pakai cenderung gagal mengenali kelas khas seperti andong dan becak, sehingga objek tersebut terlewat atau salah klasifikasi dan estimasi kepadatan yang menjadi dasar pengambilan keputusan menjadi tidak akurat sejak akarnya. Persoalan ini perlu diselesaikan lebih dahulu karena dataset merupakan fondasi bagi seluruh tahap berikutnya, sehingga kekeliruan pada tahap ini akan merambat ke pemilihan model maupun keluaran sistem.
+    \item Varian model YOLOv8 dan YOLO11 yang memberikan performa deteksi terbaik untuk kesembilan kelas tersebut belum diketahui, termasuk pengaruh ketidakseimbangan jumlah \textit{instance} antarkelas terhadap performa deteksi pada tiap kelas. Pemilihan model tanpa perbandingan yang sistematis berisiko menghasilkan model yang terlalu berat sehingga gagal berjalan secara \textit{real-time} pada perangkat dengan sumber daya terbatas, atau model yang lemah pada kelas minoritas sehingga sistem gagal mendeteksi kepadatan justru pada kondisi yang ramai. Persoalan ini mendesak karena kesalahan pemilihan model pada tahap awal sulit dikoreksi setelah sistem dibangun di atasnya.
+    \item Model deteksi terbaik belum diimplementasikan ke dalam sistem pemantauan kepadatan berbasis web yang memproses \textit{stream} video kamera CCTV secara \textit{real-time}. Tanpa implementasi tersebut, model dengan akurasi setinggi apa pun tidak memberi manfaat operasional, dan pemantauan kepadatan tetap bertumpu pada pengamatan manual dengan keterbatasan cakupan serta beban pengawasan operator yang telah diuraikan pada latar belakang. Persoalan ini perlu segera dijawab karena lonjakan pengunjung pada periode puncak menuntut informasi kepadatan yang cepat dan objektif sebagai dasar pengendalian kerumunan, yang tidak dapat diandalkan dari pengamatan manual secara terus-menerus.
 \end{enumerate}
 
 \section{Tujuan Penelitian}
@@ -91,8 +98,8 @@ penelitian dapat ditelusuri secara runtut dari ketersediaan data hingga sistem y
 beroperasi.
 
 \begin{enumerate}
-    \item Membangun dataset deteksi sembilan kelas objek kawasan Malioboro (andong, bajaj, becak, sepeda, bus, mobil, motor, orang, dan truk) dari rekaman kamera CCTV melalui anotasi semi-otomatis berbantuan model \textit{pretrained} dengan koreksi manual.
-    \item Membandingkan performa varian model YOLOv8 dan YOLO11 dalam mendeteksi kesembilan kelas menggunakan metrik mAP50, mAP50-95, dan F1, menganalisis pengaruh ketidakseimbangan kelas terhadap performa deteksi tiap kelas, lalu memilih model terbaik dan mengoptimasi performanya melalui penyetelan \textit{hyperparameter}.
+    \item Membangun dataset deteksi sembilan kelas objek kawasan Malioboro (andong, bajaj, becak, sepeda, bus, mobil, motor, orang, dan truk) dari rekaman kamera CCTV melalui anotasi semiotomatis berbantuan model \textit{pretrained} dengan koreksi manual.
+    \item Membandingkan performa varian model YOLOv8 dan YOLO11 dalam mendeteksi kesembilan kelas menggunakan metrik mAP50, mAP50-95, dan F1, menganalisis pengaruh ketidakseimbangan kelas terhadap performa deteksi tiap kelas, lalu memilih model terbaik dan mengoptimasi performanya melalui penyetelan resolusi citra masukan.
     \item Mengimplementasikan model deteksi terbaik ke dalam sistem pemantauan kepadatan berbasis web yang memproses \textit{stream} video kamera CCTV secara \textit{real-time} dan mengukur performa inferensinya.
 \end{enumerate}
 
@@ -108,7 +115,7 @@ yang terkontrol. Ruang lingkup selengkapnya diuraikan sebagai berikut.
     \item Lokasi penelitian dibatasi pada kawasan wisata Malioboro, Kota Yogyakarta, dengan sumber data berupa \textit{stream} video dari 22 titik kamera \textit{closed-circuit television} (CCTV) publik di kawasan tersebut.
     \item Objek yang dideteksi dibatasi pada sembilan kelas, yaitu andong, bajaj, becak, sepeda, bus, mobil, motor, orang, dan truk.
     \item Model deteksi yang dilatih dan dibandingkan dibatasi pada varian YOLOv8 dan YOLO11.
-    \item Dataset yang digunakan adalah data primer yang dibangun dari rekaman kamera CCTV kawasan Malioboro melalui anotasi semi-otomatis dengan koreksi manual. Rincian proses anotasi dijelaskan pada Bab III.
+    \item Dataset yang digunakan adalah data primer yang dibangun dari rekaman kamera CCTV kawasan Malioboro melalui anotasi semiotomatis dengan koreksi manual. Rincian proses anotasi dijelaskan pada Bab III.
     \item Sistem hanya melakukan pemantauan (\textit{monitoring}) kepadatan secara \textit{real-time} dan tidak melakukan prediksi kepadatan pada waktu mendatang.
     \item Penghitungan objek dilakukan per \textit{frame}. Sistem tidak melakukan pelacakan (\textit{tracking}) objek antar-\textit{frame}.
     \item Penetapan ambang notifikasi berbasis tingkat pelayanan (\textit{level of service}) untuk kepadatan orang hanya diterapkan pada dua titik kamera yang dikalibrasi sebagai contoh. Titik kamera lainnya serta penetapan ambang untuk kemacetan kendaraan berada di luar lingkup dan menjadi arah pengembangan lanjutan.
@@ -149,15 +156,15 @@ menggambarkan susunan keseluruhan naskah.
 Bab II menyajikan tinjauan pustaka dan dasar teori yang melandasi penelitian. Tinjauan 
 pustaka membahas penelitian terdahulu yang relevan beserta posisi penelitian ini di 
 antaranya. Dasar teori menguraikan konsep deteksi objek, arsitektur model YOLOv8 dan 
-YOLO11, metrik evaluasi deteksi, ketidakseimbangan kelas, anotasi semi-otomatis, dan 
+YOLO11, metrik evaluasi deteksi, ketidakseimbangan kelas, anotasi semiotomatis, dan 
 tingkat pelayanan (\textit{level of service}) pejalan kaki. Bab ini ditutup dengan 
 analisis perbandingan metode yang menjadi dasar pemilihan model deteksi.
 
 Bab III menguraikan metode penelitian secara bertahap. Pembahasan dimulai dari pengumpulan 
-data berupa \textit{stream} kamera CCTV, dilanjutkan anotasi semi-otomatis dengan koreksi 
+data berupa \textit{stream} kamera CCTV, dilanjutkan anotasi semiotomatis dengan koreksi 
 manual dan prapemrosesan data untuk membentuk dataset. Bagian berikutnya menjelaskan 
 konfigurasi pelatihan model serta metode evaluasi yang digunakan untuk membandingkan 
-varian model, serta penyetelan \textit{hyperparameter} pada model terpilih untuk 
+varian model, serta penyetelan resolusi citra masukan pada model terpilih untuk 
 mengoptimasi performanya. Bab ini juga memuat perancangan dan implementasi sistem 
 pemantauan berbasis web yang memproses video secara \textit{real-time}.
 
@@ -165,7 +172,7 @@ Bab IV menyajikan hasil penelitian beserta pembahasannya. Bagian awal memaparkan
 pembentukan dataset, dilanjutkan hasil pelatihan dan perbandingan varian model YOLOv8 dan 
 YOLO11 berdasarkan metrik yang telah ditetapkan. Analisis performa pada tiap kelas 
 dibahas untuk melihat pengaruh ketidakseimbangan kelas terhadap hasil deteksi. Bagian 
-selanjutnya menyajikan hasil penyetelan \textit{hyperparameter}
+selanjutnya menyajikan hasil penyetelan resolusi citra masukan
 pada model terpilih beserta dampaknya terhadap akurasi dan kecepatan inferensi. Bagian
 akhir memaparkan hasil implementasi dan pengujian sistem pemantauan.
 

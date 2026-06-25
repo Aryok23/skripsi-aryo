@@ -15,7 +15,7 @@ pembentukan dataset, perbandingan dan penyetelan model deteksi, serta implementa
 pemantauan berbasis web. Ketiga jawaban tersebut diuraikan secara berurutan pada subbab 
 ini, mengikuti urutan rumusan masalah pada Bab I agar keterkaitan antara permasalahan dan 
 temuan dapat ditelusuri secara langsung. Subbab ini diakhiri dengan satu paragraf yang 
-merangkum keterkaitan antar ketiga jawaban tersebut sebagai satu rangkaian yang saling 
+merangkum keterkaitan antara ketiga jawaban tersebut sebagai satu rangkaian yang saling 
 menopang.
 
 Pertama, dataset deteksi objek untuk sembilan kelas khas kawasan Malioboro berhasil 
@@ -71,51 +71,100 @@ Penelitian ini memiliki sejumlah batasan yang ditetapkan sejak awal agar lingkup
 terarah, sebagaimana diuraikan pada Bab I, dan beberapa keterbatasan tambahan yang 
 teridentifikasi sepanjang proses penelitian. Batasan dan keterbatasan tersebut bukan 
 kekurangan yang perlu disesalkan, melainkan penanda arah yang jelas bagi penelitian 
-berikutnya untuk melanjutkan dari titik yang tepat. Subbab ini menguraikan enam arah 
+berikutnya untuk melanjutkan dari titik yang tepat. Subbab ini menguraikan sembilan arah 
 pengembangan lanjutan yang diturunkan langsung dari batasan dan keterbatasan tersebut, 
 disusun agar penelitian berikutnya tidak mengulang capaian yang sudah diperoleh di sini.
 
-Perluasan kalibrasi tingkat pelayanan ke seluruh titik kamera. Penetapan ambang 
-notifikasi berbasis tingkat pelayanan pejalan kaki pada penelitian ini hanya diterapkan 
-pada dua titik kamera yang dikalibrasi melalui homografi sebagai contoh penerapan, 
-sedangkan titik kamera lainnya menggunakan ambang yang ditentukan secara manual. 
-Penelitian lanjutan dapat mengembangkan metode kalibrasi homografi yang lebih efisien atau 
-bahkan otomatis untuk diterapkan pada seluruh 22 titik kamera, sehingga seluruh kawasan 
-mendapat penetapan ambang yang berbasis standar kuantitatif, bukan hanya estimasi manual.
+Validasi lapangan dan perluasan kalibrasi tingkat pelayanan. Penetapan ambang 
+notifikasi berbasis tingkat pelayanan pejalan kaki pada penelitian ini bergantung pada 
+estimasi luas area melalui pengukuran visual pada \textit{Google Earth}, tanpa validasi 
+menggunakan pengukuran fisik langsung di lapangan, sebagaimana diakui sebagai keterbatasan 
+pada Bab III. Kalibrasi ini juga hanya diterapkan pada dua titik kamera sebagai contoh 
+penerapan, sedangkan titik kamera lainnya menggunakan ambang yang ditentukan secara manual. 
+Penelitian lanjutan dapat melakukan pengukuran lapangan langsung, misalnya menggunakan 
+meteran atau alat ukur jarak laser, untuk memvalidasi atau mengoreksi estimasi luas yang 
+dihasilkan dari \textit{Google Earth}, serta mengembangkan metode estimasi luas area yang 
+lebih sistematis atau bahkan otomatis untuk diterapkan pada seluruh 22 titik kamera, 
+sehingga seluruh kawasan mendapat penetapan ambang yang berbasis standar kuantitatif yang 
+terverifikasi, bukan hanya estimasi visual.
 
-Penanganan kepadatan kendaraan dan kemacetan. Penelitian ini berfokus pada kepadatan 
-pejalan kaki melalui konsep tingkat pelayanan, sedangkan penetapan ambang untuk kemacetan 
-kendaraan berada di luar lingkup penelitian. Mengingat Malioboro juga mengalami kemacetan 
-akibat lonjakan kendaraan sebagaimana diuraikan pada Bab I, dan sistem yang dibangun sudah 
-mendeteksi kelas kendaraan seperti mobil, motor, bus, dan truk, penelitian lanjutan dapat 
-mengembangkan standar kepadatan atau tingkat pelayanan jalan yang setara untuk kendaraan, 
-sehingga sistem dapat memberi notifikasi kemacetan selain notifikasi keramaian pejalan 
-kaki.
+Penanganan kepadatan kendaraan dan kemacetan. Kesenjangan ini muncul karena penelitian 
+berfokus pada kepadatan pejalan kaki melalui konsep tingkat pelayanan, sedangkan penetapan 
+ambang untuk kemacetan kendaraan berada di luar lingkup penelitian, meskipun Bab I telah 
+menguraikan bahwa Malioboro juga mengalami kemacetan akibat lonjakan kendaraan. Sistem 
+yang dibangun sudah mendeteksi kelas kendaraan seperti mobil, motor, bus, dan truk, 
+sehingga penelitian lanjutan dapat mengembangkan standar kepadatan atau tingkat pelayanan 
+jalan yang setara untuk kendaraan, sehingga sistem dapat memberi notifikasi kemacetan 
+selain notifikasi keramaian pejalan kaki.
 
 Penambahan kemampuan pelacakan antar-\textit{frame}. Sistem yang dibangun melakukan 
 penghitungan objek per \textit{frame} tanpa pelacakan (\textit{tracking}) antar-\textit{frame}, 
 sehingga tidak dapat membedakan apakah objek yang terdeteksi pada \textit{frame} berurutan 
-adalah objek yang sama atau berbeda. Penambahan algoritma pelacakan seperti DeepSORT pada 
-penelitian lanjutan akan memungkinkan estimasi arus pergerakan, kecepatan rata-rata 
-pejalan kaki, dan deteksi pola pergerakan yang tidak dapat diperoleh dari penghitungan per 
-\textit{frame} saja.
+adalah objek yang sama atau berbeda, dan tidak dapat mengoreksi deteksi yang hilang sesaat 
+akibat oklusi pada kerumunan padat sebagaimana diidentifikasi pada Bab II dan Bab IV. 
+Penambahan algoritma pelacakan seperti DeepSORT pada penelitian lanjutan akan memungkinkan 
+estimasi arus pergerakan, kecepatan rata-rata pejalan kaki, dan deteksi pola pergerakan 
+yang tidak dapat diperoleh dari penghitungan per \textit{frame} saja, sekaligus 
+menstabilkan jumlah hitungan saat objek sesaat tertutup oleh objek lain.
+
+Verifikasi akurasi penghitungan pada kepadatan tinggi. Pengujian beban tinggi pada Bab 
+IV berhasil memicu notifikasi pada ambang sesungguhnya di kamera Titik Nol dan menunjukkan 
+\textit{backend} tetap stabil saat memproses lebih dari seratus objek, tetapi ketepatan 
+jumlah deteksi pada kepadatan setinggi itu tidak dapat diverifikasi satu per satu karena 
+kotak deteksi saling menutupi sebagian besar area \textit{frame}. Penelitian lanjutan dapat 
+melakukan verifikasi akurasi penghitungan pada kondisi kepadatan tinggi secara sistematis, 
+misalnya dengan membandingkan jumlah deteksi sistem terhadap hitungan manual pada potongan 
+\textit{frame} terbatas atau terhadap metode \textit{crowd counting} berbasis estimasi 
+kepadatan, untuk mengukur sejauh mana penghitungan tetap akurat saat oklusi antarobjek 
+meningkat tajam.
 
 Peningkatan kecepatan inferensi pada perangkat dengan sumber daya terbatas. Pengukuran 
-pada Bab IV menunjukkan kecepatan inferensi model terpilih pada GPU GTX 1650 belum 
-mencapai laju \textit{real-time} yang ideal, terutama setelah penyetelan resolusi ke 960 
-piksel. Penelitian lanjutan dapat mengeksplorasi teknik kompresi model seperti 
+pada Bab IV menunjukkan kecepatan inferensi model terpilih pada GPU GTX 1650 hanya 
+mencapai 8,89 \textit{frame} per detik setelah penyetelan resolusi ke 960 piksel, 
+turun dari 9,73 \textit{frame} per detik pada resolusi dasar, dan keduanya belum mencapai 
+laju \textit{real-time} yang ideal untuk pemantauan banyak kamera secara bersamaan. 
+Penelitian lanjutan dapat mengeksplorasi teknik kompresi model seperti 
 \textit{pruning} atau kuantisasi, maupun konversi ke \textit{runtime} inferensi yang lebih 
 efisien seperti TensorRT, untuk mempercepat inferensi pada perangkat kelas konsumen tanpa 
 mengorbankan akurasi secara signifikan.
 
-Penanganan ketidakseimbangan kelas pada tahap pelatihan. Penelitian ini menunjukkan 
+Penyetelan \textit{hyperparameter} pelatihan secara lebih luas. Penyetelan pada 
+penelitian ini terbatas pada satu konfigurasi, yaitu resolusi citra masukan, sebagaimana 
+diuraikan pada Bab III, sedangkan \textit{hyperparameter} pelatihan lain seperti 
+\textit{learning rate}, \textit{weight decay}, dan bobot fungsi \textit{loss} tetap 
+menggunakan nilai bawaan agar perbandingan antararsitektur pada Bab IV tetap adil. 
+Cakupan ini memang sesuai dengan tujuan utama penelitian, tetapi belum mengeksplorasi 
+apakah pencarian \textit{hyperparameter} yang lebih luas dapat meningkatkan performa model 
+terpilih lebih jauh dibanding hasil penyetelan resolusi semata. Penelitian lanjutan dapat 
+melakukan pencarian \textit{hyperparameter} yang lebih ekstensif pada model terpilih, 
+misalnya menggunakan \textit{grid search} atau optimasi \textit{Bayesian} terhadap \textit{learning rate} 
+dan bobot fungsi \textit{loss} per kelas, untuk menelaah apakah kombinasi konfigurasi 
+pelatihan yang lebih luas dapat mencapai performa yang lebih tinggi dibanding 
+penyetelan resolusi saja.
+
+Penanganan ketidakseimbangan kelas pada tahap pelatihan. Bab IV menunjukkan 
 ketidakseimbangan kelas memengaruhi performa deteksi pada kelas minoritas seperti sepeda 
-dan bajaj, dan mengatasinya melalui penyetelan resolusi yang menyasar objek berukuran 
-kecil. Penelitian lanjutan dapat menambahkan strategi yang menyasar langsung 
-ketidakseimbangan kelas, misalnya pembobotan fungsi kerugian per kelas atau augmentasi 
-data yang lebih agresif khusus pada kelas minoritas, untuk menelaah apakah performa kelas 
-seperti bajaj dan bus dapat ditingkatkan lebih lanjut tanpa mengorbankan performa kelas 
-mayoritas.
+(F1 0,270 dengan 162 \textit{instance} latih) dan bajaj (F1 0,428 dengan 96 \textit{instance} 
+latih), dan penelitian ini mengatasinya secara tidak langsung melalui penyetelan resolusi 
+yang menyasar objek berukuran kecil. Penelitian lanjutan dapat menambahkan strategi yang 
+menyasar langsung ketidakseimbangan kelas, misalnya pembobotan fungsi kerugian per kelas 
+atau augmentasi data yang lebih agresif khusus pada kelas minoritas, untuk menelaah apakah 
+performa kelas seperti bajaj dan bus dapat ditingkatkan lebih lanjut tanpa mengorbankan 
+performa kelas mayoritas.
+
+Penggantian anotasi semi-otomatis dengan anotasi manual penuh. Sebagian besar data 
+latih pada penelitian ini diperoleh melalui anotasi semi-otomatis, yaitu kotak pembatas 
+awal dari model \textit{pretrained} YOLOv8x dan YOLO11x yang dikoreksi secara manual, 
+sebagaimana diuraikan pada Bab III. Pendekatan ini mempercepat proses anotasi, tetapi kotak 
+pembatas awal yang dihasilkan tetap mengikuti karakteristik visual dataset asal model 
+\textit{pretrained} tersebut, sehingga ada kemungkinan kotak yang dianggap benar oleh 
+anotator pada tahap koreksi sebenarnya kurang merepresentasikan kondisi objek yang 
+sesungguhnya di lapangan, khususnya untuk kelas yang bentuknya berbeda dari kelas serupa 
+pada dataset umum seperti becak. Penelitian lanjutan dapat membangun ulang dataset 
+menggunakan anotasi manual penuh tanpa bantuan model \textit{pretrained}, sehingga setiap 
+kotak pembatas benar-benar mengikuti kondisi visual objek di kawasan Malioboro, dan menguji 
+apakah performa model yang dilatih pada dataset tersebut lebih tinggi dibanding performa 
+yang dicapai pada dataset hasil anotasi semi-otomatis.
 
 Pengujian keterlibatan pengguna dan kebergunaan sistem. Penelitian ini berfokus pada 
 perbandingan model deteksi dan implementasi fungsional sistem, sedangkan perancangan 

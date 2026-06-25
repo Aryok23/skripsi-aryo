@@ -51,30 +51,74 @@ pada Tabel \ref{tab:tinjauan}.
         \hline
         Zhang dkk. \cite{zhang2022realtime} & YOLOv5 (ditingkatkan) & Deteksi kendaraan lalu lintas & Menurunkan tingkat deteksi keliru \\
         \hline
-        Penelitian ini & YOLOv8 \& YOLO11 (n, s, m, l) & Deteksi sembilan kelas objek di Malioboro & Multi-kelas mencakup andong, becak, dan bajaj. Membandingkan dua generasi dan diimplementasikan sebagai sistem berbasis web \\
+        Penelitian ini & YOLOv8 \& YOLO11 (n, s, m, l) & Deteksi sembilan kelas objek di Malioboro & Multikelas mencakup andong, becak, dan bajaj. Membandingkan dua generasi dan diimplementasikan sebagai sistem berbasis web \\
         \hline
     \end{tabular}
     \label{tab:tinjauan}
 \end{table}
+
+Penanganan oklusi pada kerumunan padat dan kemiripan visual antarkelas pada penelitian 
+terdahulu ini juga perlu ditelaah secara kritis, karena keduanya menjadi sumber kesalahan 
+deteksi yang relevan langsung dengan konteks Malioboro. Gündüz dan Işık \cite{gunduz2023new} 
+serta Hansika dkk. \cite{hansika2024privacy} melaporkan perbandingan akurasi antarvarian 
+YOLO secara agregat, tetapi tidak menelaah secara khusus bagaimana akurasi tersebut berubah 
+saat kepadatan orang meningkat dan oklusi antarindividu semakin sering terjadi, sehingga 
+ketahanan model pada kerumunan yang benar-benar padat belum terverifikasi pada kedua 
+penelitian tersebut. Ginting dkk. \cite{ginting2021crowd} dan Apeksha dkk. 
+\cite{apeksha2025transit} memang menyasar konteks kerumunan dan transportasi umum yang 
+padat, tetapi fokus keduanya pada pemicu notifikasi berbasis ambang jumlah, bukan pada 
+analisis bagaimana oklusi memengaruhi akurasi penghitungan itu sendiri. Persoalan oklusi 
+pada kerumunan padat juga diakui sebagai keterbatasan umum pada model deteksi penuh tubuh 
+(\textit{full-body detection}), yang mendorong sebagian penelitian \textit{crowd counting} untuk 
+beralih ke deteksi kepala atau menambahkan algoritma pelacakan guna menjaga konsistensi 
+penghitungan saat objek sesaat tertutup \cite{hansika2024privacy}.
+
+Kemiripan visual antarkelas juga belum banyak disentuh pada penelitian deteksi kerumunan 
+maupun penumpang, karena penelitian tersebut umumnya hanya mendeteksi satu kelas objek 
+(orang) sehingga persoalan antarkelas tidak muncul. Persoalan ini lebih terlihat pada 
+penelitian deteksi kendaraan multikelas. Pada studi MIO-TCD, kelas-kelas dengan kemiripan 
+visual seperti sepeda, motor, dan pejalan kaki, atau sesama jenis truk, terbukti menjadi 
+kelompok kesalahan klasifikasi yang dominan, bahkan pada model dengan akurasi keseluruhan 
+tinggi \cite{luo2018miotcd}. Risiko kemiripan visual semacam ini secara konseptual juga 
+berlaku pada becak di kawasan Malioboro. Saat kap penumpang becak tertutup, bagian yang 
+tersisa untuk dikenali kamera hanya area roda belakang dan pengemudi, sehingga kemiripannya 
+bergantung pada jenis becak. Becak bermotor cenderung menyerupai motor karena keduanya 
+digerakkan mesin dengan postur pengemudi yang sebanding, sedangkan becak kayuh cenderung 
+menyerupai sepeda karena cara kerja kayuhan dan rangka yang lebih ramping tanpa mesin. 
+Risiko ini sejalan dengan pengamatan bahwa model deteksi umum berbasis COCO, yang tidak 
+memiliki kelas becak sama sekali, kerap salah mengenali becak sebagai motor. Zhang dkk. 
+\cite{zhang2022realtime} menyasar penurunan deteksi keliru pada kendaraan secara umum, 
+tetapi tidak secara khusus menelaah kemiripan antarkelas sebagai sumber kesalahan 
+tersendiri. Tidak satu pun penelitian pada Tabel \ref{tab:tinjauan} menangani kelas 
+kendaraan tradisional Indonesia, sehingga belum ada rujukan langsung mengenai bagaimana 
+risiko kemiripan visual semacam ini ditangani pada konteks objek lokal. Sejauh mana risiko 
+tersebut benar-benar terwujud pada model yang dilatih ditelaah lebih lanjut melalui 
+analisis \textit{confusion matrix} pada Bab IV, yang justru menunjukkan kelas bajaj 
+sebagai kasus paling bermasalah dengan kebocoran nyata ke becak dan mobil, sementara 
+kebocoran becak ke motor atau sepeda tidak terlihat signifikan.
 
 Penelitian-penelitian tersebut menunjukkan model YOLO efektif untuk pemantauan kerumunan 
 maupun kendaraan secara \textit{real-time}. Meskipun demikian, sebagian besar berfokus pada satu 
 jenis objek saja, yaitu orang atau kendaraan, dan mengandalkan kelas objek yang tersedia 
 pada dataset umum. Belum ada penelitian yang menangani kombinasi objek khas kawasan 
 wisata Indonesia, termasuk andong, becak, dan bajaj, dalam satu sistem. Perbandingan 
-antar varian model pada sebagian besar penelitian juga terbatas pada satu generasi YOLO. 
+antarvarian model pada sebagian besar penelitian juga terbatas pada satu generasi YOLO. 
 Penelitian ini menempatkan diri pada celah tersebut dengan membandingkan varian YOLOv8 
 dan YOLO11 untuk mendeteksi sembilan kelas objek khas kawasan Malioboro secara bersamaan, 
 kemudian mengimplementasikan model terbaik ke dalam sistem pemantauan berbasis web.
 
-Sintesis dari keenam penelitian tersebut memperlihatkan tiga celah yang ditangani penelitian 
+Sintesis dari keenam penelitian tersebut memperlihatkan empat celah yang ditangani penelitian 
 ini. Pertama, belum ada yang membangun satu dataset deteksi yang memuat objek transportasi 
 tradisional Indonesia seperti andong, becak, dan bajaj bersama objek umum dalam satu 
 himpunan kelas. Kedua, perbandingan langsung antara dua generasi YOLO yang setara secara 
 implementasi masih jarang dilakukan pada kondisi data lokal yang timpang. Ketiga, sebagian 
 besar penelitian berhenti pada tahap deteksi atau penghitungan, sedangkan penelitian ini 
 melanjutkannya hingga penerjemahan jumlah deteksi menjadi tingkat kepadatan berbasis standar 
-nasional dan implementasi sistem yang berjalan. Ketiga celah inilah yang menjadi dasar 
+nasional dan implementasi sistem yang berjalan. Keempat, penanganan oklusi pada kerumunan 
+padat dan kemiripan visual antarkelas belum ditelaah pada konteks objek transportasi 
+tradisional Indonesia, sehingga penelitian ini menyumbang analisis empiris atas kedua 
+persoalan tersebut secara khusus pada kelas becak, bajaj, dan kelas berukuran kecil lain 
+melalui pembahasan pada Bab IV. Keempat celah inilah yang menjadi dasar 
 rumusan masalah pada Bab I.
 
 \section{Dasar Teori}
@@ -83,7 +127,7 @@ Subbab ini menyusun landasan teori mengikuti alur kerja sistem yang dibangun, mu
 teori deteksi objek hingga penerjemahan hasil deteksi menjadi penilaian kepadatan. Teori 
 deteksi objek dan arsitektur YOLO menjelaskan cara objek dikenali dari citra kamera 
 pengawas, sedangkan metrik evaluasi menetapkan ukuran kualitas deteksi yang dihasilkan. 
-Ketidakseimbangan kelas dan anotasi semi-otomatis membahas dua persoalan data yang 
+Ketidakseimbangan kelas dan anotasi semiotomatis membahas dua persoalan data yang 
 menentukan keberhasilan pelatihan model pada konteks kawasan Malioboro. Bagian terakhir, 
 yaitu tingkat pelayanan pejalan kaki, menghubungkan keluaran model dengan tujuan akhir 
 sistem berupa estimasi kepadatan dan penetapan ambang notifikasi.
@@ -118,7 +162,7 @@ ini menggunakan pendekatan \textit{one-stage} karena kebutuhan pemantauan kepada
 secara \textit{real-time} dari \textit{stream} video kamera CCTV.
 
 Komponen penting dalam arsitektur detektor modern adalah \textit{Feature Pyramid Network} 
-(FPN) \cite{lin2017fpn}. FPN membangun representasi piramida fitur multi-skala dari 
+(FPN) \cite{lin2017fpn}. FPN membangun representasi piramida fitur multiskala dari 
 jaringan konvolusional dengan biaya komputasi yang minimal, menggunakan arsitektur 
 \textit{top-down} dengan koneksi lateral untuk menghasilkan peta fitur berkualitas tinggi 
 di semua skala. Kemampuan mendeteksi objek dalam berbagai ukuran ini menjadikan FPN 
@@ -146,7 +190,7 @@ modul C2f (\textit{cross-stage partial bottleneck with two convolutions}) pada
 fitur tingkat tinggi dengan informasi kontekstual untuk meningkatkan akurasi deteksi. 
 YOLOv8 juga menggunakan model \textit{anchor-free} dengan \textit{decoupled head} yang 
 memproses tugas klasifikasi dan regresi kotak pembatas secara terpisah, sehingga mengurangi 
-konflik antar-tugas dan meningkatkan konvergensi pelatihan. Susunan menyeluruh 
+konflik antartugas dan meningkatkan konvergensi pelatihan. Susunan menyeluruh 
 \textit{backbone}, \textit{neck}, dan \textit{head} YOLOv8 ditunjukkan pada Gambar 
 \ref{fig:arsitektur_yolov8}.
 
@@ -231,7 +275,7 @@ Model \textit{transformer} seperti RT-DETR \cite{zhao2024rtdetr} adalah alternat
 kompetitif dari segi akurasi. Akan tetapi, YOLOv8 dan YOLO11 dipilih karena efisiensi 
 parameter, ekosistem yang matang, serta kemampuan \textit{deployment} yang lebih luas pada 
 berbagai jenis perangkat mulai dari server hingga \textit{edge device}. Pertimbangan 
-arsitektur yang lebih lengkap antara YOLO, RT-DETR, dan Faster R-CNN diuraikan pada Subbab 
+arsitektur yang lebih lengkap antara YOLO, RT-DETR, dan Faster R-CNN diuraikan pada subbab 
 \ref{sec:analisis_perbandingan}.
 
 \subsection{Metrik Evaluasi Deteksi Objek}
@@ -242,7 +286,7 @@ yaitu ketepatan lokalisasi kotak pembatas dan kebenaran klasifikasi kelas. Penje
 berikut menguraikan tiap metrik beserta cara membacanya, lengkap dengan contoh angka, agar 
 makna setiap nilai dapat dipahami tanpa latar belakang khusus deteksi objek. Seluruh metrik 
 ini digunakan secara konsisten pada semua eksperimen dalam penelitian ini agar perbandingan 
-antar varian model bersifat setara.
+antarvarian model bersifat setara.
 
 \textit{Intersection over Union} (IoU) mengukur seberapa besar tumpang tindih antara kotak 
 pembatas hasil prediksi $B_{p}$ dan kotak pembatas acuan $B_{gt}$ (\textit{ground truth}). 
@@ -354,7 +398,7 @@ detektor yang kuat pada satu kelas.
 \textit{mean Average Precision} (mAP) adalah rata-rata AP di seluruh $N$ kelas yang 
 dievaluasi, sebagaimana Persamaan (\ref{eq:map}). Nilai mAP memberikan satu angka tunggal 
 yang merangkum performa model pada semua kelas sekaligus, sehingga memudahkan perbandingan 
-antar model. Karena dirata-ratakan, mAP yang tinggi belum menjamin tiap kelas terdeteksi 
+antarmodel. Karena dirata-ratakan, mAP yang tinggi belum menjamin tiap kelas terdeteksi 
 baik, sehingga analisis per kelas tetap diperlukan untuk kasus dengan kelas yang timpang.
 
 \begin{equation}
@@ -362,8 +406,9 @@ baik, sehingga analisis per kelas tetap diperlukan untuk kasus dengan kelas yang
     \label{eq:map}
 \end{equation}
 
-Dataset COCO \cite{lin2014coco} memperkenalkan dua varian mAP yang kini menjadi standar 
-evaluasi, yaitu mAP50 dan mAP50-95. mAP50 dihitung pada ambang IoU tunggal 0,50, sehingga 
+Dataset COCO \cite{lin2014coco} menjadi landasan lahirnya standar evaluasi baru dalam 
+deteksi objek, dimana kompetisi perkembangannya memopulerkan dua varian metrik pengujian 
+yang kini diadopsi secara luas, yaitu mAP50 dan mAP50-95. mAP50 dihitung pada ambang IoU tunggal 0,50, sehingga 
 hanya menuntut kotak prediksi kira-kira tepat dan bersifat longgar terhadap ketepatan 
 lokalisasi. mAP50-95 adalah rata-rata mAP pada sepuluh ambang IoU dari 0,50 hingga 0,95 
 dengan langkah 0,05, sebagaimana Persamaan (\ref{eq:map5095}), sehingga menuntut kotak yang 
@@ -386,7 +431,7 @@ nilai F1 adalah $2 \cdot (0,75 \cdot 0,90)/(0,75 + 0,90) \approx 0,82$. Sifat in
 sangat berguna untuk mengevaluasi kinerja per kelas pada kondisi ketidakseimbangan kelas, 
 karena memberi penalti yang setara terhadap precision maupun recall yang rendah. Pada 
 penelitian ini, metrik utama yang digunakan adalah mAP50, mAP50-95, F1-\textit{score} per 
-kelas, dan \textit{confusion matrix} untuk menganalisis pola kesalahan deteksi antar kelas.
+kelas, dan \textit{confusion matrix} untuk menganalisis pola kesalahan deteksi antarkelas.
 
 \begin{equation}
     \mathit{F1} = 2 \cdot \frac{\mathit{Precision} \cdot \mathit{Recall}}{\mathit{Precision} + \mathit{Recall}}
@@ -396,7 +441,7 @@ kelas, dan \textit{confusion matrix} untuk menganalisis pola kesalahan deteksi a
 \subsection{Ketidakseimbangan Kelas pada Deteksi Objek}
 \label{sec:ketidakseimbangan}
 
-Ketidakseimbangan kelas adalah kondisi ketika jumlah \textit{instance} antar kelas dalam 
+Ketidakseimbangan kelas adalah kondisi ketika jumlah \textit{instance} antarkelas dalam 
 dataset berbeda jauh. Oksuz dkk. \cite{oksuz2021imbalance} mengidentifikasi 
 ketidakseimbangan kelas sebagai salah satu masalah utama dalam deteksi objek, yang dapat 
 menyebabkan model lebih condong mempelajari kelas dengan jumlah \textit{instance} besar 
@@ -417,10 +462,10 @@ Kelas mayoritas seperti orang cenderung lebih mudah dipelajari karena contohnya 
 sedangkan kelas minoritas berisiko terabaikan meskipun secara visual cukup khas. Analisis 
 pengaruh ketidakseimbangan ini terhadap F1-\textit{score} per kelas disajikan pada Bab IV.
 
-\subsection{Anotasi Semi-Otomatis}
+\subsection{Anotasi Semiotomatis}
 
 Anotasi dataset dalam jumlah besar secara manual membutuhkan waktu dan sumber daya yang 
-besar. Pendekatan anotasi semi-otomatis menggabungkan prediksi model \textit{pretrained} 
+besar. Pendekatan anotasi semiotomatis menggabungkan prediksi model \textit{pretrained} 
 dengan verifikasi dan koreksi manual untuk mempercepat proses anotasi tanpa mengorbankan 
 kualitas secara keseluruhan \cite{tenckhoff2025feedback}. Tenckhoff dkk. menunjukkan 
 bahwa platform anotasi berbasis umpan balik model, di mana model \textit{pretrained} 
@@ -442,7 +487,7 @@ yang mengklasifikasikan kondisi pergerakan pejalan kaki berdasarkan kepadatan da
 kenyamanan. Fruin \cite{fruin1971designing} mendefinisikan enam tingkat pelayanan (A hingga 
 F) berdasarkan studi fotografi \textit{time-lapse} terhadap pergerakan pejalan kaki, dengan 
 parameter utama berupa kepadatan orang per meter persegi dan ruang yang tersedia per pejalan 
-kaki. Tingkat A menggambarkan kondisi pergerakan bebas tanpa konflik antar-pejalan kaki, 
+kaki. Tingkat A menggambarkan kondisi pergerakan bebas tanpa konflik antar pejalan kaki, 
 sedangkan tingkat E dan F menggambarkan kondisi padat saat kontak fisik tidak terhindarkan 
 dan pergerakan mandiri menjadi terbatas.
 
@@ -484,14 +529,37 @@ kondisi yang masih nyaman, saat pejalan kaki sudah harus sering menyesuaikan kec
 posisi karena potensi konflik arus. Ambang ini menjadi rujukan kuantitatif yang masuk akal 
 untuk menandai kondisi kepadatan yang perlu diwaspadai pada sistem pemantauan.
 
-Untuk menghitung kepadatan dari hasil deteksi, diperlukan pemetaan antara koordinat piksel 
-dan koordinat nyata di bidang tanah. Pemetaan ini dilakukan melalui estimasi homografi 
-planar, yaitu transformasi perspektif yang mengubah titik-titik pada bidang gambar menjadi 
-koordinat metrik di bidang tanah menggunakan korespondensi titik acuan yang diketahui 
-dimensinya \cite{fruin1971designing}. Dengan homografi yang telah dikalibrasi, jumlah objek 
-yang terdeteksi dalam suatu zona dapat dibagi dengan luas zona tersebut dalam meter persegi 
-untuk memperoleh estimasi kepadatan. Nilai kepadatan itu kemudian dipetakan ke tingkat 
-pelayanan sesuai klasifikasi Fruin dan Permen PUPR 2014 pada Tabel \ref{tab:los}.
+Untuk menghitung kepadatan dari hasil deteksi, jumlah objek pada suatu zona perlu 
+dibandingkan dengan luas area zona tersebut dalam meter persegi, mengikuti definisi 
+kepadatan pejalan kaki sebagai jumlah orang per satuan luas yang juga menjadi dasar 
+klasifikasi tingkat pelayanan pada Tabel \ref{tab:los} \cite{fruin1971designing}. 
+Perbandingan ini memerlukan nilai luas area pejalan kaki yang tercakup oleh setiap kamera, 
+yang pada penelitian ini diperoleh melalui estimasi visual pada citra satelit tampak atas 
+menggunakan fitur pengukuran jarak dan area pada platform \textit{Google Earth}.
+
+Pendekatan ini berbeda dari kalibrasi kamera berbasis transformasi koordinat piksel, karena 
+luas area tidak dihitung dari koordinat piksel pada citra CCTV, melainkan diukur secara 
+independen pada citra satelit yang sudah berorientasi tampak atas terhadap permukaan bumi. 
+Operator menggambar poligon pada citra satelit yang membatasi area pejalan kaki yang 
+terlihat pada sudut pandang kamera tertentu, dan platform menghitung luas poligon tersebut 
+berdasarkan skala citra yang sudah terkalibrasi terhadap koordinat geografis. Pendekatan ini 
+hanya dapat diterapkan pada kamera yang sudut pandangnya relatif tetap dan mencakup area 
+pejalan kaki yang dapat dikenali batasnya secara visual pada citra satelit, sebagaimana 
+diuraikan pada Bab III untuk dua kamera yang dipilih, yaitu kamera seberang Gedung Agung dan 
+kamera Titik Nol.
+
+Dengan luas area yang telah diketahui, kepadatan pada suatu zona dihitung sebagai
+
+\begin{equation}
+    \rho = \frac{n}{A}
+    \label{eq:kepadatan}
+\end{equation}
+
+dengan $\rho$ adalah kepadatan dalam orang per meter persegi, $n$ adalah jumlah orang yang 
+terdeteksi sistem pada zona tersebut, dan $A$ adalah luas area zona dalam meter persegi yang 
+diperoleh dari estimasi \textit{Google Earth}. Nilai kepadatan $\rho$ ini kemudian dipetakan 
+ke tingkat pelayanan sesuai klasifikasi Fruin dan Permen PUPR 2014 pada Tabel 
+\ref{tab:los}.
 
 \subsection{Arsitektur Aplikasi Web Pemantauan}
 
